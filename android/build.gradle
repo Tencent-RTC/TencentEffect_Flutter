@@ -1,0 +1,70 @@
+/**
+ * tencent_effect_flutter
+ * Created by kevinxlhua on 2022/8/12.
+ * Copyright (c) 2020年 Tencent. All rights reserved
+ */
+
+group 'com.tencent.effect.tencent_effect_flutter'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven {url 'https://jitpack.io'}
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {url 'https://jitpack.io'}
+
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 31
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        minSdkVersion 21
+    }
+
+    //获取local.properties配置文件
+//    def localProperties = new Properties()
+//    def localPropertiesFile = rootProject.file('local.properties')
+//    if (localPropertiesFile.exists()) {
+//        localPropertiesFile.withReader('UTF-8') {
+//            reader -> localProperties.load(reader)
+//        }
+//    }
+//
+//     //获取flutter的sdk路径
+//    def flutterRoot = localProperties.getProperty('flutter.sdk')
+//    if (flutterRoot == null) {
+//        throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+//    }
+    dependencies {
+        compileOnly 'com.tencent.liteav:custom-video-processor:latest.release'  //与直播间里关系的公共库
+        compileOnly 'com.google.code.gson:gson:2.8.6'
+        compileOnly fileTree(dir: "libs", include: ['*.jar'])
+        compileOnly fileTree(dir: "libs", include: ['*.aar'])
+//        compileOnly files("$flutterRoot/bin/cache/artifacts/engine/android-arm/flutter.jar")
+        compileOnly 'androidx.annotation:annotation:1.1.0'
+        compileOnly 'com.tencent.mediacloud:TencentEffect_S1-04:3.5.0.5'
+    }
+
+
+}
