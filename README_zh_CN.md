@@ -1,3 +1,5 @@
+简体中文  |  [English](https://github.com/Tencent-RTC/TencentEffect_Flutter/blob/main/README.md)
+
 ## 目录结构
 
 ```
@@ -25,7 +27,7 @@
 ```
  tencent_effect_flutter:
        git:
-         url: https://github.com/TencentCloud/tencenteffect-sdk-flutter
+         url: https://github.com/Tencent-RTC/TencentEffect_Flutter
 ```
 
 然后更新依赖包

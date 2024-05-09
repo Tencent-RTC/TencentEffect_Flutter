@@ -1,4 +1,7 @@
+[简体中文](https://github.com/Tencent-RTC/TencentEffect_Flutter/blob/main/README_zh_CN.md)  |  English
+
 ## Directory Structure
+
 ```
 ├── android	//flutter plugin android dir
 │   ├── gradle    //Android gradle
@@ -24,7 +27,7 @@ Integrate TencentEffect_Flutter version and add configuration in `pubspec.yaml`
 ```
  tencent_effect_flutter:
        git:
-         url: https://github.com/TencentCloud/tencenteffect-sdk-flutter
+         url: https://github.com/Tencent-RTC/TencentEffect_Flutter
 ```
 
 Update the dependency packages
