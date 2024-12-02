@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 34  //flutter.compileSdkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -55,5 +55,5 @@ flutter {
 }
 
 dependencies {
-    implementation 'com.tencent.mediacloud:TencentEffect_S1-07:3.5.0.5'
+    implementation 'com.tencent.mediacloud:TencentEffect_S1-07:3.9.0.8'
 }

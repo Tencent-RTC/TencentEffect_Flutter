@@ -123,7 +123,7 @@ class PanelViewState extends State<BeautyPanelView> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
-          iconSize: 30,
+          iconSize: 22,
           onPressed: onSubTitleBackBtnClick,
           icon: const Icon(
             Icons.arrow_back_ios,
@@ -285,7 +285,7 @@ class PanelViewState extends State<BeautyPanelView> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: _buildListViewItemIcon(index),
           ),
           Container(
@@ -294,7 +294,7 @@ class PanelViewState extends State<BeautyPanelView> {
                 _currentList?[index] == null
                     ? ""
                     : PanelDisplay.getDisplayName(_currentList![index])!,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
+                style: const TextStyle(color: Colors.white, fontSize: 11),
                 textAlign: TextAlign.center,
               )),
           Container(
@@ -488,5 +488,11 @@ class PanelViewState extends State<BeautyPanelView> {
 
   String _getTypeDataListViewOffsetKey(TEUIProperty property) {
     return "${property.displayName}${property.displayNameEn}";
+  }
+
+
+
+  void _clickItem(TESDKParam sdkParam){
+
   }
 }

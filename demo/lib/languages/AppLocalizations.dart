@@ -282,4 +282,8 @@ class AppLocalizations {
       _localizedStrings[locale.languageCode]!["panel_slider_type_lut"];
 
 
+  String? get getEffectModeDes =>
+      _localizedStrings[locale.languageCode]!["effect_mode_des"];
+
+
 }

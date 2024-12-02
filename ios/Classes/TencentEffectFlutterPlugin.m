@@ -68,9 +68,13 @@ static TencentEffectFlutterPlugin* _instance = nil;
       [[XmagicApiManager shareSingleton] updateProperty:call.arguments];
   }else if ([@"onPause" isEqualToString:call.method]) {
       [[XmagicApiManager shareSingleton] onPause];
+      result(nil);
   }else if ([@"onResume" isEqualToString:call.method]) {
       [[XmagicApiManager shareSingleton] onResume];
-  }else if ([@"onDestroy" isEqualToString:call.method]) {      [[XmagicApiManager shareSingleton] onDestroy];
+      result(nil);
+  }else if ([@"onDestroy" isEqualToString:call.method]) {
+      [[XmagicApiManager shareSingleton] onDestroy];
+      result(nil);
   }else if ([@"isBeautyAuthorized" isEqualToString:call.method]) {
       NSString *res = [[XmagicApiManager shareSingleton] isBeautyAuthorized:call.arguments];
       result(res);
@@ -87,6 +91,19 @@ static TencentEffectFlutterPlugin* _instance = nil;
   }else if ([@"setDowngradePerformance" isEqualToString:call.method]) {
       [[XmagicApiManager shareSingleton] setDowngradePerformance];
       result(nil);
+  }else if ([@"enableHighPerformance" isEqualToString:call.method]) {
+      [[XmagicApiManager shareSingleton] setDowngradePerformance];
+      result(nil);
+  }else if ([@"getDeviceLevel" isEqualToString:call.method]) {
+      int level = [[XmagicApiManager shareSingleton] getDeviceLevel];
+      result(@(level));
+  }else if([@"setEffectMode" isEqualToString:call.method]) {
+      if([call.arguments isKindOfClass:[NSString class]]) {
+          NSString *modeType = (NSString *)call.arguments;
+          [[XmagicApiManager shareSingleton] setTeEffectMode:modeType];
+      }
+      result(nil);
+          
   }else if ([@"setAudioMute" isEqualToString:call.method]) {
       [[XmagicApiManager shareSingleton] setAudioMute:call.arguments];
       result(nil);
@@ -102,8 +119,10 @@ static TencentEffectFlutterPlugin* _instance = nil;
       result(@true);
   }else if ([@"setResourcePath" isEqualToString:call.method]) {
       [[XmagicApiManager shareSingleton] setResourcePath:call.arguments[@"pathDir"]];
+      result(nil);
   }else if ([@"setEffect" isEqualToString:call.method]) {
       [[XmagicApiManager shareSingleton] setEffect:call.arguments];
+      result(nil);
   }else {
     result(FlutterMethodNotImplemented);
   }

@@ -51,10 +51,14 @@ typedef void (^eventYTDataCallBlock)(id event);
  
 -(void)setDowngradePerformance;
 
- 
+-(void)enableHighPerformance;
+
+-(void)setTeEffectMode:(NSString *)modeType;
+
 -(void)setAudioMute:(BOOL)mute;
 
- 
+-(int)getDeviceLevel;
+
 - (void)setFeatureEnableDisable:(NSString *_Nonnull)featureName enable:(BOOL)enable;
 
 - (void)setResourcePath:(NSString *)pathDir;

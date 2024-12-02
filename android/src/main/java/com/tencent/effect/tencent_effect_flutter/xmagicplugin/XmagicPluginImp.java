@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tencent.effect.tencent_effect_flutter.utils.LogUtils;
 import com.tencent.effect.tencent_effect_flutter.res.XmagicResParser;
+import com.tencent.xmagic.XmagicConstant;
 import com.tencent.xmagic.XmagicProperty;
 
 import java.lang.reflect.Type;
@@ -421,6 +422,32 @@ public class XmagicPluginImp implements XmagicPlugin {
     public void setDowngradePerformance(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         XmagicApiManager.getInstance().setDowngradePerformance();
         result.success(true);
+    }
+
+    @Override
+    public void enableHighPerformance(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        XmagicApiManager.getInstance().enableHighPerformance();
+        result.success(true);
+    }
+
+    @Override
+    public void setEffectMode(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        if (call.arguments instanceof String) {
+            String effectMode = (String) call.arguments;
+            if (effectMode.equals("0")) {
+                XmagicApiManager.getInstance().setEffectMode(XmagicConstant.EffectMode.NORMAL);
+            } else {
+                XmagicApiManager.getInstance().setEffectMode(XmagicConstant.EffectMode.PRO);
+            }
+            result.success(null);
+            return;
+        }
+        resultParameterError(call.method, result);
+    }
+
+    @Override
+    public void getDeviceLevel(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        result.success(XmagicApiManager.getInstance().getDeviceLevel(applicationContext));
     }
 
 

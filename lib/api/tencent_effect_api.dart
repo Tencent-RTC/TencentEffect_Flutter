@@ -46,10 +46,15 @@ abstract class TencentEffectApi {
 
   void enableEnhancedMode();
 
-
+  @deprecated
   void setDowngradePerformance();
 
+  @deprecated
+  void enableHighPerformance();
 
+  void setEffectMode(EffectMode effectMode);
+
+  Future<int> getDeviceLevel();
 
   void setAudioMute(bool isMute);
 
@@ -141,6 +146,10 @@ class LogLevel {
   static const int ASSERT = 7;
 }
 
+enum EffectMode {
+  NORMAL,
+  PRO
+}
 
 enum TEImageOrientation {
   ROTATION_0,

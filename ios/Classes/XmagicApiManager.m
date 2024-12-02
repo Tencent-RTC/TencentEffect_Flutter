@@ -35,7 +35,7 @@ static const int MAX_SEG_VIDEO_DURATION = 200 * 1000;
 @property (nonatomic, strong) NSString                  *makeup;
 @property (nonatomic, strong) NSArray *resNames;  //resource name
 @property (nonatomic, strong) NSLock  *lock;
-@property (nonatomic, assign) BOOL highPerfoemance;
+@property (nonatomic, assign) EffectMode effectMode ;
 @property (nonatomic, strong) NSMutableArray<NSDictionary *>*saveEffectList;
 @property (nonatomic, assign) BOOL xmagicInit;
 
@@ -52,6 +52,15 @@ static XmagicApiManager *shareSingleton = nil;
     });
     return shareSingleton;
 }
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _effectMode = EFFECT_MODE_PRO; // 设置默认值
+    }
+    return self;
+}
+
  
 + (instancetype)allocWithZone:(struct _NSZone *)zone {
     return [XmagicApiManager shareSingleton];
@@ -123,7 +132,7 @@ static XmagicApiManager *shareSingleton = nil;
 
 -(void)initResName{
     _resNames = @[@"Light3DPlugin",@"LightBodyPlugin",@"LightCore",
-    @"LightHandPlugin",@"LightSegmentPlugin",@"makeupMotionRes",@"2dMotionRes",
+    @"LightHandPlugin",@"LightSegmentPlugin",@"makeupMotionRes",@"lightMakeupRes",@"2dMotionRes",
     @"3dMotionRes",@"ganMotionRes",@"handMotionRes",@"lut",@"segmentMotionRes"];
 }
 
@@ -210,7 +219,27 @@ static XmagicApiManager *shareSingleton = nil;
 }
 
 - (void)setDowngradePerformance{
-    self.highPerfoemance = YES;
+    _effectMode = EFFECT_MODE_NORMAL;
+}
+
+- (void)enableHighPerformance {
+    _effectMode = EFFECT_MODE_NORMAL;
+}
+
+- (int)getDeviceLevel {
+    DeviceLevel level = [XMagic getDeviceLevel];
+    return (int)level;
+}
+-(void)setTeEffectMode:(NSString *)modeType {
+    if(self.xMagicApi != nil) {
+        NSLog(@"setEffectMode mothod , the xMagicApi is not nil)");
+    }
+    
+    if([@"0" isEqualToString:modeType]) {
+        self.effectMode = EFFECT_MODE_NORMAL;
+    } else if([@"1" isEqualToString:modeType]) {
+        self.effectMode = EFFECT_MODE_PRO;
+    }
 }
 
 - (void)setFeatureEnableDisable:(NSString *)featureName enable:(BOOL)enable{
@@ -236,7 +265,7 @@ static XmagicApiManager *shareSingleton = nil;
 - (void)buildBeautySDK:(int)width and:(int)height{
     NSDictionary *assetsDict = @{@"core_name":@"LightCore.bundle",
                                  @"root_path":self.xmagicResPath,
-                                 @"setDowngradePerformance":@(self.highPerfoemance)
+                                 @"effect_mode":@(self.effectMode)
     };
 
     // Init beauty kit

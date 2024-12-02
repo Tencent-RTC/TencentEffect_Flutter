@@ -22,6 +22,12 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
   final Map<String, TEUIProperty> _uiPropertyIndexByNameMap =
       HashMap<String, TEUIProperty>();
 
+
+  bool hasLightMakeup = false;
+  bool pointMakeupChecked = false;
+  bool lightMakeupChecked = false;
+  List<TEUIProperty> pointMakeup = [];
+
   @override
   void setPanelDataList(List<TEPanelDataModel> panelDataList) {
     _panelDataList = panelDataList;
@@ -47,7 +53,7 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
     _uiPropertyIndexByNameMap.clear();
     _dataCategory.clear();
     for (var dataModel in _panelDataList!) {
-      final jsonString = await rootBundle.loadString(dataModel.jsonFilePath!);
+      final jsonString = await rootBundle.loadString(dataModel.jsonFilePath);
       Map<String, dynamic> map = json.decode(jsonString);
       TEUIProperty uiProperty = TEUIProperty.fromJson(map);
       uiProperty.uiCategory = dataModel.category;
@@ -58,10 +64,36 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
       _putDataToMap(uiProperty);
       result.add(uiProperty);
       _dataCategory[dataModel.category] = uiProperty;
+      if (uiProperty.uiCategory == UICategory.BEAUTY) {
+        obtainPointMakeup(uiProperty);
+        //判断是否有默认设置
+        pointMakeupChecked = ProducerUtils.getUsedProperties(pointMakeup).isNotEmpty || pointMakeupChecked;
+      }
+      if (uiProperty.uiCategory == UICategory.LUT) {
+        pointMakeupChecked = ProducerUtils.getUsedProperties(pointMakeup).isNotEmpty || pointMakeupChecked;
+      }
+      if (uiProperty.uiCategory == UICategory.LIGHT_MAKEUP) {
+        hasLightMakeup = true;
+        //判断是否有默认设置
+        lightMakeupChecked = ProducerUtils.getUsedProperties([uiProperty]).isNotEmpty;
+      }
     }
-
     syncUIState();
     return result;
+  }
+
+  void obtainPointMakeup(TEUIProperty? teuiProperty) {
+    if (teuiProperty == null) {
+      return;
+    }
+    if (teuiProperty.propertyList != null) {
+      for (TEUIProperty uiProperty in teuiProperty.propertyList!) {
+        obtainPointMakeup(uiProperty);
+      }
+    } else if (teuiProperty.sdkParam != null &&
+        ProducerUtils.isPointMakeup(teuiProperty.sdkParam!)) {
+      pointMakeup.add(teuiProperty);
+    }
   }
 
   void _completionParam(List<TEUIProperty> list, UICategory category,
@@ -84,6 +116,9 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
             break;
           case UICategory.SEGMENTATION:
             property.sdkParam!.effectName = TEffectName.EFFECT_SEGMENTATION;
+            break;
+          case UICategory.LIGHT_MAKEUP:
+            property.sdkParam!.effectName = TEffectName.EFFECT_LIGHT_MAKEUP;
             break;
           default:
             break;
@@ -179,6 +214,8 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
       case UICategory.MOTION:
       case UICategory.SEGMENTATION:
         return [ProducerUtils.createNoneItem(TEffectName.EFFECT_MOTION)];
+      case UICategory.LIGHT_MAKEUP:
+        return [ProducerUtils.createNoneItem(TEffectName.EFFECT_LIGHT_MAKEUP)];
     }
     return null;
   }
@@ -242,13 +279,11 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
       case UICategory.BEAUTY:
       case UICategory.BODY_BEAUTY:
       case UICategory.LUT:
-        TEUIProperty? currentProperty = _dataCategory[uiProperty.uiCategory];
-        if ((uiProperty.propertyList == null && uiProperty.sdkParam != null) || uiProperty.isNoneItem()) {
-          if (currentProperty != null) {
-            ProducerUtils.revertUIState(currentProperty.propertyList, uiProperty);
-            ProducerUtils.changeParamUIState(uiProperty, UIState.CHECKED_AND_IN_USE);
-          }
-        }
+         checkItem(uiProperty);
+         onClickPointMakeup(uiProperty);
+        break;
+      case UICategory.LIGHT_MAKEUP:
+        onClickLightMakeup(uiProperty);
         break;
       case UICategory.MAKEUP:
       case UICategory.MOTION:
@@ -271,6 +306,61 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
         break;
     }
     return uiProperty.propertyList;
+  }
+
+  void onClickPointMakeup(TEUIProperty property) {
+    checkItem(property);
+    if (hasLightMakeup &&
+        property.sdkParam != null &&
+        ProducerUtils.isPointMakeup(property.sdkParam!)) {
+      //只有在有轻美妆的情况下才会继续判断点击的是否是 单点妆容
+      pointMakeupChecked = true;
+      if (!lightMakeupChecked) {
+        return;
+      }
+      lightMakeupChecked = false;
+      uncheckLightMakeup();
+    }
+  }
+
+  void onClickLightMakeup(TEUIProperty property) {
+    lightMakeupChecked = true;
+    checkItem(property);
+    if (!pointMakeupChecked) {
+      return;
+    }
+    pointMakeupChecked = false;
+    uncheckPointMakeup();
+  }
+
+  void uncheckPointMakeup() {
+    TEUIProperty? lutData = _dataCategory[UICategory.LUT];
+    if (lutData != null) {
+      ProducerUtils.revertUIStateToInit([lutData]);
+    }
+    if (pointMakeup != null) {
+      ProducerUtils.revertUIStateToInit(pointMakeup);
+    }
+  }
+
+
+
+  void uncheckLightMakeup() {
+    TEUIProperty? lightMakeup = _dataCategory[UICategory.LIGHT_MAKEUP];
+    if (lightMakeup == null) {
+      return;
+    }
+    ProducerUtils.revertUIStateToInit([lightMakeup]);
+  }
+
+  void checkItem(TEUIProperty uiProperty) {
+    TEUIProperty? currentProperty = _dataCategory[uiProperty.uiCategory];
+    if ((uiProperty.propertyList == null && uiProperty.sdkParam != null) || uiProperty.isNoneItem()) {
+      if (currentProperty != null) {
+        ProducerUtils.revertUIState(currentProperty.propertyList, uiProperty);
+        ProducerUtils.changeParamUIState(uiProperty, UIState.CHECKED_AND_IN_USE);
+      }
+    }
   }
 
   @override

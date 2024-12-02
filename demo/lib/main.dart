@@ -12,7 +12,7 @@ import 'package:tencent_effect_flutter_demo/page/live_page.dart';
 import 'package:tencent_effect_flutter_demo/page/trtc_page.dart';
 import 'package:tencent_effect_flutter_demo/view/progress_dialog.dart';
 import 'config/te_res_config.dart';
-
+import 'languages/AppLocalizations.dart';
 
 const String licenseUrl =
     "Please replace it with your license URL.";
@@ -29,9 +29,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         localizationsDelegates: const [
-          GlobalWidgetsLocalizations.delegate, 
-          GlobalMaterialLocalizations.delegate,  
-          GlobalCupertinoLocalizations.delegate,  
+          GlobalWidgetsLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
           APPLocalizationDelegate.delegate
         ],
         supportedLocales: const [
@@ -58,6 +58,8 @@ class HomePage extends StatefulWidget {
 class _HomeState extends State<HomePage> {
   static const String TAG = "_HomeState";
 
+  EffectMode effectMode = EffectMode.PRO;
+
   @override
   void initState() {
     super.initState();
@@ -70,8 +72,7 @@ class _HomeState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Tencent Effect demo'),
       ),
-      body: Center(
-          child: Column(
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TextButton(
@@ -86,20 +87,57 @@ class _HomeState extends State<HomePage> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ))),
-          // TextButton(
-          //     onPressed: () => {_onClickPlayer(context)},
-          //     child: const Text('Player',
-          //         style: TextStyle(
-          //           fontWeight: FontWeight.bold,
-          //         ))),
-          // TextButton(
-          //     onPressed: () => {_onTestPressed(context)},
-          //     child: const Text('Test',
-          //         style: TextStyle(
-          //           fontWeight: FontWeight.bold,
-          //         ))),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                const Text(
+                  "Effect Mode : ",
+                ),
+                Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Radio(
+                            value: EffectMode.NORMAL,
+                            onChanged: (value) {
+                              setState(() {
+                                effectMode = value! as EffectMode;
+                              });
+                            },
+                            groupValue: effectMode,
+                          ),
+                          const Text("Normal"),
+                          Radio(
+                            value: EffectMode.PRO,
+                            onChanged: (value) {
+                              setState(() {
+                                effectMode = value! as EffectMode;
+                              });
+                            },
+                            groupValue: effectMode,
+                          ),
+                          const Text("Pro"),
+                        ],
+                      ),
+                    ))
+              ],
+            ),
+          ),
+          Flexible(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                    AppLocalizations.of(context)?.getEffectModeDes ?? "",
+                    style: const TextStyle(fontSize: 16.0)),
+              ),
+            ),
+          )
         ],
-      )),
+      ),
     );
   }
 
@@ -151,8 +189,6 @@ class _HomeState extends State<HomePage> {
     });
   }
 
-
-
   void _onClickTRTC(BuildContext context) {
     _initSettings((result) {
       if (result) {
@@ -176,14 +212,12 @@ class _HomeState extends State<HomePage> {
         });
   }
 
-
   ///dismiss dialog
   _dismissDialog(BuildContext context) {
     Navigator.of(context).pop(true);
   }
 
   void _requestPermission(BuildContext context, String pageName) async {
-
     ///request permission
     Map<Permission, PermissionStatus> statuses = await [
       Permission.camera,
@@ -191,16 +225,17 @@ class _HomeState extends State<HomePage> {
     ].request();
     if (statuses[Permission.camera] != PermissionStatus.denied &&
         statuses[Permission.microphone] != PermissionStatus.denied) {
+      TencentEffectApi.getApi()!.setEffectMode(effectMode);
       Navigator.of(context).pushNamed(pageName);
     }
   }
 
   void initPanelViewConfig() {
-
     TEResConfig.getConfig()
       ..setBeautyRes("assets/beauty_panel/beauty.json")
       ..setBeautyBodyRes("assets/beauty_panel/beauty_body.json")
       ..setLutRes("assets/beauty_panel/lut.json")
+      ..setLightMakeupRes("assets/beauty_panel/light_makeup.json")
       ..setMakeUpRes("assets/beauty_panel/makeup.json")
       ..setMotionRes("assets/beauty_panel/motions.json")
       ..setSegmentationRes("assets/beauty_panel/segmentation.json");
@@ -224,7 +259,6 @@ class _HomeState extends State<HomePage> {
     await sharedPreferences.setString(
         "app_version_name", currentAppVersionName);
   }
-
 
   _onTestPressed(BuildContext context) async {
     ///Method for testing copied model bundles (Android only)

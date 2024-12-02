@@ -38,6 +38,7 @@ Solution: Change the value of FLUTTER_BUILD_MODE in Build Settings in Xcode to r
 
 | Flutter version   | Android version        | iOS version             |
 | -------------- | ------------------- | ------------------- |
+| 3.9.0 | 3.9.0 | 3.9.0 |
 | 3.6.0        | 3.6.0.4               | 3.6.0.3               |
 | 0.3.5.0        | 3.5.0               | 3.5.0               |
 | 0.3.1.1        | 3.3.0,3.2.0        | 3.3.0,3.2.0        |
@@ -46,6 +47,10 @@ Solution: Change the value of FLUTTER_BUILD_MODE in Build Settings in Xcode to r
 |                |                     |                     |
 
 ## 5. Version Log
+
+### V3.9.0
+
+Adapted to Android & iOS 3.9.0, added EffectMode method
 
 ### V0.3.5.0
 
