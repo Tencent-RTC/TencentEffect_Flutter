@@ -16,7 +16,7 @@ abstract class ResPathManager {
   static const String JSON_RES_MARK_MOTION_GESTURE = "MotionRes/handMotionRes/";
   static const String JSON_RES_MARK_MOTION_GAN = "MotionRes/ganMotionRes/";
   static const String JSON_RES_MARK_SEG = "MotionRes/segmentMotionRes/";
-
+  static const String JSON_RES_MARK_LIGHT_MAKEUP = "MotionRes/light_makeup/";
 
   ///Get the storage path of the resource, which is called when the Beauty SDK is initialized
   Future<String> getResPath();
@@ -44,6 +44,8 @@ abstract class ResPathManager {
 
   ///Get the Makeup resource path
   Future<String> getMakeUpDir();
+
+  Future<String> getLightMakeupDir();
 
 
   ///Get split resource path

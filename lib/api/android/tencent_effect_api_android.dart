@@ -306,5 +306,24 @@ class TencentEffectApiAndroid implements TencentEffectApi {
     return await _channel.invokeMethod(
         "isDeviceSupportMotion", {"motionResPath": motionResPath});
   }
+
+  @override
+  void enableHighPerformance() {
+    _channel.invokeMethod("enableHighPerformance");
+  }
+
+  @override
+  Future<int> getDeviceLevel() async {
+    return await _channel.invokeMethod("getDeviceLevel");
+  }
+
+  @override
+  void setEffectMode(EffectMode effectMode) {
+    if (effectMode == EffectMode.NORMAL) {
+      _channel.invokeMethod("setEffectMode", "0");
+    } else {
+      _channel.invokeMethod("setEffectMode", "1");
+    }
+  }
 }
 typedef AddAiModeCallBack = void Function(String inputDir, int code);

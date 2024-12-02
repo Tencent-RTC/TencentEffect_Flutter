@@ -31,6 +31,9 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.tencent.effect.tencent_effect_flutter'
+    }
     compileSdkVersion 31
 
     compileOptions {
@@ -63,7 +66,7 @@ android {
         compileOnly fileTree(dir: "libs", include: ['*.aar'])
 //        compileOnly files("$flutterRoot/bin/cache/artifacts/engine/android-arm/flutter.jar")
         compileOnly 'androidx.annotation:annotation:1.1.0'
-        compileOnly 'com.tencent.mediacloud:TencentEffect_S1-04:3.5.0.5'
+        compileOnly 'com.tencent.mediacloud:TencentEffect_S1-07:3.9.0.8'
     }
 
 

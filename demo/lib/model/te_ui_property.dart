@@ -130,6 +130,7 @@ enum UICategory {
   MOTION,
   MAKEUP,
   SEGMENTATION,
+  LIGHT_MAKEUP
 }
 
 class UIState {
@@ -223,6 +224,8 @@ class EffectValueType {
     EffectValueType.RANGE_NEG100_POS100,
     TEffectName.BEAUTY_IMAGE_TINT:
     EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_IMAGE_BRIGHTNESS:
+    EffectValueType.RANGE_NEG100_POS100,
     TEffectName.BEAUTY_EYE_DISTANCE:
     EffectValueType.RANGE_NEG100_POS100,
     TEffectName.BEAUTY_EYE_ANGLE:
@@ -231,6 +234,11 @@ class EffectValueType {
     EffectValueType.RANGE_NEG100_POS100,
     TEffectName.BEAUTY_EYE_HEIGHT:
     EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYE_OUT_CORNER:
+    EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYE_POSITION:
+    EffectValueType.RANGE_NEG100_POS100,
+
     TEffectName.BEAUTY_EYEBROW_ANGLE:
     EffectValueType.RANGE_NEG100_POS100,
     TEffectName.BEAUTY_EYEBROW_DISTANCE:
@@ -265,8 +273,10 @@ class EffectValueType {
     EffectValueType.RANGE_NEG100_POS100,
     TEffectName.BEAUTY_FACE_FOREHEAD:
     EffectValueType.RANGE_NEG100_POS100,
-
-    TEffectName.BODY_ENLARGE_CHEST_STRENGTH:EffectValueType.RANGE_NEG100_POS100
+    TEffectName.BODY_ENLARGE_CHEST_STRENGTH:
+    EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BODY_SLIM_ARM_STRENGTH:
+    EffectValueType.RANGE_NEG100_POS100
 
   };
 

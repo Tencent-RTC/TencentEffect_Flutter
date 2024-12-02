@@ -1,4 +1,6 @@
 
+import 'package:flutter/cupertino.dart';
+
 import '../constant/te_constant.dart';
 import '../manager/res_path_manager.dart';
 import '../model/te_ui_property.dart';
@@ -6,6 +8,12 @@ import '../model/te_ui_property.dart';
 class ProducerUtils {
   static const String HTTP_NAME = "http";
   static const String ZIP_NAME = ".zip";
+
+
+  static final List<String> BEAUTY_BLACK_EFFECT_NAMES = [
+    TEffectName.BEAUTY_BLACK_1,
+    TEffectName.BEAUTY_BLACK_2,
+  ];
 
   static final List<String> BEAUTY_WHITEN_EFFECT_NAMES = [
     TEffectName.BEAUTY_WHITEN,
@@ -29,6 +37,7 @@ class ProducerUtils {
       case UICategory.LUT:
       case UICategory.MAKEUP:
       case UICategory.MOTION:
+      case UICategory.LIGHT_MAKEUP:
       case UICategory.SEGMENTATION:
         if (uiProperty.resourceUri != null &&
             uiProperty.resourceUri!.isNotEmpty) {
@@ -126,7 +135,11 @@ class ProducerUtils {
       } else if (uiProperty.sdkParam!.resourcePath!
           .startsWith(ResPathManager.JSON_RES_MARK_SEG)) {
         stringBuffer.write(await ResPathManager.getResManager().getSegDir());
+      }else if (uiProperty.sdkParam!.resourcePath!.startsWith(ResPathManager.JSON_RES_MARK_LIGHT_MAKEUP)) {
+        debugPrint("completionResPath   ");
+        stringBuffer.write(await ResPathManager.getResManager().getLightMakeupDir());
       }
+      debugPrint("completionResPath   2222");
       stringBuffer.write(_getFileName(uiProperty.sdkParam!.resourcePath!));
       uiProperty.sdkParam!.resourcePath = stringBuffer.toString();
     }
@@ -273,16 +286,16 @@ class ProducerUtils {
     if (property.sdkParam!.effectName == property2.sdkParam!.effectName) {
       return true;
     }
-    if (ProducerUtils.contains(
-            BEAUTY_WHITEN_EFFECT_NAMES, property.sdkParam!.effectName) &&
-        ProducerUtils.contains(
-            BEAUTY_WHITEN_EFFECT_NAMES, property2.sdkParam!.effectName)) {
+    if (ProducerUtils.contains(BEAUTY_WHITEN_EFFECT_NAMES, property.sdkParam!.effectName) &&
+        ProducerUtils.contains(BEAUTY_WHITEN_EFFECT_NAMES, property2.sdkParam!.effectName)) {
       return true;
     }
-    if (ProducerUtils.contains(
-            BEAUTY_FACE_EFFECT_NAMES, property.sdkParam!.effectName) &&
-        ProducerUtils.contains(
-            BEAUTY_FACE_EFFECT_NAMES, property2.sdkParam!.effectName)) {
+    if (ProducerUtils.contains(BEAUTY_FACE_EFFECT_NAMES, property.sdkParam!.effectName) &&
+        ProducerUtils.contains(BEAUTY_FACE_EFFECT_NAMES, property2.sdkParam!.effectName)) {
+      return true;
+    }
+    if (ProducerUtils.contains(BEAUTY_BLACK_EFFECT_NAMES, property.sdkParam!.effectName) &&
+        ProducerUtils.contains(BEAUTY_BLACK_EFFECT_NAMES, property2.sdkParam!.effectName)) {
       return true;
     }
     return false;
@@ -305,4 +318,47 @@ class ProducerUtils {
     teuiProperty.setUiState(uiState);
     ProducerUtils.changeParamUIState(teuiProperty.parentUIProperty, uiState);
   }
+
+  /**
+   * 将item的状态强制设置为 init
+   * @param uiPropertyList
+   */
+  static void revertUIStateToInit(List<TEUIProperty>? uiPropertyList) {
+    if (uiPropertyList == null) {
+      return;
+    }
+
+    for (TEUIProperty? property in uiPropertyList) {
+      if (property == null) {
+        continue;
+      }
+      ProducerUtils.revertUIStateToInit(property.propertyList);
+      if (property.getUiState() == UIState.INIT) {
+        continue;
+      }
+      changeParamUIState(property, UIState.INIT);
+    }
+  }
+
+  static bool isPointMakeup(TESDKParam sdkParam) {
+    if (sdkParam.effectName == null || sdkParam.effectName!.isEmpty) {
+      return false;
+    }
+    return pointMakeupEffectName.contains(sdkParam.effectName);
+  }
+
+  static List<String> pointMakeupEffectName = [
+    TEffectName.BEAUTY_MOUTH_LIPSTICK,
+    TEffectName.BEAUTY_FACE_RED_CHEEK,
+    TEffectName.BEAUTY_FACE_SOFTLIGHT,
+    TEffectName.BEAUTY_FACE_MAKEUP_EYE_SHADOW,
+    TEffectName.BEAUTY_FACE_MAKEUP_EYE_LINER,
+    TEffectName.BEAUTY_FACE_MAKEUP_EYELASH,
+    TEffectName.BEAUTY_FACE_MAKEUP_EYE_SEQUINS,
+    TEffectName.BEAUTY_FACE_MAKEUP_EYEBROW,
+    TEffectName.BEAUTY_FACE_MAKEUP_EYEBALL,
+    TEffectName.BEAUTY_FACE_MAKEUP_EYELIDS,
+    TEffectName.BEAUTY_FACE_MAKEUP_EYEWOCAN,
+    TEffectName.EFFECT_LUT
+  ];
 }

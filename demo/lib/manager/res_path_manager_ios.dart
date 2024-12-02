@@ -35,6 +35,11 @@ class ResPathManagerIos implements ResPathManager {
   }
 
   @override
+  Future<String> getLightMakeupDir() async {
+    return "${await getResPath()}${Platform.pathSeparator}lightMakeupRes.bundle${Platform.pathSeparator}";
+  }
+
+  @override
   Future<String> getResPath() async {
     Directory directory = await getApplicationSupportDirectory();
     return directory.path +

@@ -35,6 +35,11 @@ class ResPathManagerAndroid implements ResPathManager {
   }
 
   @override
+  Future<String> getLightMakeupDir() async {
+    return "${await getResPath()}${Platform.pathSeparator}MotionRes${Platform.pathSeparator}light_makeup${Platform.pathSeparator}";
+  }
+
+  @override
   Future<String> getResPath() async {
     Directory directory = await getApplicationSupportDirectory();
     return directory.path +

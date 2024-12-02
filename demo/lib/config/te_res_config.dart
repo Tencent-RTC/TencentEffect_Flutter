@@ -46,6 +46,10 @@ class TEResConfig {
         .add(TEPanelDataModel(resourcePath, UICategory.SEGMENTATION));
   }
 
+  void setLightMakeupRes(String resourcePath) {
+    defaultPanelDataList
+        .add(TEPanelDataModel(resourcePath, UICategory.LIGHT_MAKEUP));
+  }
   List<TEPanelDataModel> getPanelDataList() {
     return defaultPanelDataList;
   }

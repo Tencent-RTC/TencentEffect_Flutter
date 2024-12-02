@@ -15,6 +15,7 @@ import com.tencent.effect.tencent_effect_flutter.utils.LogUtils;
 import com.tencent.xmagic.XmagicApi;
 import com.tencent.xmagic.XmagicApi.XmagicAIDataListener;
 import com.tencent.xmagic.XmagicApi.XmagicTipsListener;
+import com.tencent.xmagic.XmagicConstant;
 import com.tencent.xmagic.XmagicProperty;
 import com.tencent.xmagic.avatar.AvatarData;
 import com.tencent.xmagic.bean.TEBodyData;
@@ -53,7 +54,7 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
     private int xMagicLogLevel = Log.WARN;
 
 
-    private boolean isPerformance = false;
+    private XmagicConstant.EffectMode effectMode = XmagicConstant.EffectMode.PRO;
 
 
     private volatile boolean enableAiData = false;
@@ -72,7 +73,6 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
 
 
     /**
-     *
      * @param context
      * @return
      */
@@ -110,7 +110,7 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
     }
 
     public void onCreateApi() {
-        XmagicApi api = new XmagicApi(mApplicationContext, XmagicResParser.getResPath(), (s, i) -> {
+        XmagicApi api = new XmagicApi(mApplicationContext, this.effectMode,XmagicResParser.getResPath(), (s, i) -> {
             if (managerListener != null) {
                 managerListener.onXmagicPropertyError(s, i);
             }
@@ -124,9 +124,6 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
             api.setTipsListener(this);
         }
         api.setXmagicLogLevel(xMagicLogLevel);
-        if (isPerformance) {
-            api.setDowngradePerformance();
-        }
         xmagicApi = api;
     }
 
@@ -178,7 +175,7 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
         enableAiData = false;
         enableYTData = false;
         enableTipsListener = false;
-        isPerformance = false;
+        effectMode = XmagicConstant.EffectMode.PRO;
         currentStreamType = XmagicApi.PROCESS_TYPE_CAMERA_STREAM;
         if (xMagicApiIsNull()) {
             LogUtils.e(TAG, "onDestroy: xmagicApi is null ");
@@ -248,8 +245,6 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
 
 
     /**
-
-     *
      * @param properties
      */
     public void isBeautyAuthorized(List<XmagicProperty<?>> properties) {
@@ -262,8 +257,6 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
     }
 
     /**
-
-     *
      * @return
      */
     public boolean isSupportBeauty() {
@@ -275,7 +268,6 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
     }
 
     /**
-     *
      * @param assetsList
      */
     public void isDeviceSupport(List<XmagicProperty<?>> assetsList) {
@@ -288,8 +280,6 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
 
 
     /**
-
-     *
      * @param motionResPath
      */
     public boolean isDeviceSupport(String motionResPath) {
@@ -340,8 +330,6 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
     }
 
     /**
-
-     *
      * @return
      */
     public boolean xMagicApiIsNull() {
@@ -357,7 +345,6 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
     }
 
 
- 
     public void enableEnhancedMode() {
         if (xMagicApiIsNull()) {
             LogUtils.e(TAG, "enableEnhancedMode: xmagicApi is null ");
@@ -367,17 +354,39 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
     }
 
 
-    
+    @Deprecated
     public void setDowngradePerformance() {
-        isPerformance = true;
         if (xMagicApiIsNull()) {
-            LogUtils.e(TAG, "setDowngradePerformance: xmagicApi is null ");
+            LogUtils.w(TAG, "setDowngradePerformance: xmagicApi is null ");
             return;
         }
-        xmagicApi.setDowngradePerformance();
+        effectMode = XmagicConstant.EffectMode.NORMAL;
     }
 
-   
+    @Deprecated
+    public void enableHighPerformance() {
+        if (xMagicApiIsNull()) {
+            LogUtils.w(TAG, "enableHighPerformance: xmagicApi is null ");
+            return;
+        }
+        effectMode = XmagicConstant.EffectMode.NORMAL;
+    }
+
+
+    public void setEffectMode(XmagicConstant.EffectMode effectMode) {
+        this.effectMode = effectMode;
+        if (this.xmagicApi != null) {
+            LogUtils.e(TAG, "enableHighPerformance: xmagicApi is not null ");
+        }
+    }
+
+    public int getDeviceLevel(Context context) {
+        int level = XmagicApi.getDeviceLevel(context).getValue();
+        LogUtils.i(TAG, "getDeviceLevel value is " + level);
+        return level;
+    }
+
+
     public void onPauseAudio() {
         if (xMagicApiIsNull()) {
             LogUtils.e(TAG, "onPauseAudio: xmagicApi is null ");
@@ -386,7 +395,7 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
         xmagicApi.onPauseAudio();
     }
 
-   
+
     public void setAudioMute(boolean isMute) {
         if (xMagicApiIsNull()) {
             LogUtils.e(TAG, "setAudioMute: xmagicApi is null ");
@@ -395,7 +404,7 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
         xmagicApi.setAudioMute(isMute);
     }
 
-    
+
     public void setFeatureEnableDisable(String featureName, boolean enable) {
         if (xMagicApiIsNull()) {
             LogUtils.e(TAG, "setFeatureEnableDisable: xmagicApi is null ");
@@ -405,7 +414,6 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
     }
 
 
-    
     public void setImageOrientation(int rotationType) {
         TEImageOrientation orientation = null;
         switch (rotationType) {
@@ -436,7 +444,7 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
         xmagicApi.setImageOrientation(orientation);
     }
 
-    
+
     public void enableAIDataListener(boolean enable) {
         this.enableAiData = enable;
         if (this.xmagicApi != null) {
@@ -449,7 +457,7 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
         LogUtils.d(TAG, "enableAIDataListener: enable = " + enable);
     }
 
-    
+
     public void enableYTDataListener(boolean enable) {
         this.enableYTData = enable;
         if (this.xmagicApi != null) {
@@ -462,7 +470,7 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
         LogUtils.d(TAG, "enableYTDataListener: enable = " + enable);
     }
 
-     
+
     public void enableTipsListener(boolean enable) {
         this.enableTipsListener = enable;
         if (this.xmagicApi != null) {

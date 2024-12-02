@@ -53,7 +53,12 @@ public interface XmagicPlugin {
     void isDeviceSupportMotion(@NonNull MethodCall call, @NonNull MethodChannel.Result result);
     void enableEnhancedMode(@NonNull MethodCall call, @NonNull MethodChannel.Result result);
 
+    @Deprecated
     void setDowngradePerformance(@NonNull MethodCall call, @NonNull MethodChannel.Result result);
+    void enableHighPerformance(@NonNull MethodCall call, @NonNull MethodChannel.Result result);
+    void setEffectMode(@NonNull MethodCall call, @NonNull MethodChannel.Result result);
+
+    void getDeviceLevel(@NonNull MethodCall call, @NonNull MethodChannel.Result result);
 
     void setAudioMute(@NonNull MethodCall call, @NonNull MethodChannel.Result result);
 

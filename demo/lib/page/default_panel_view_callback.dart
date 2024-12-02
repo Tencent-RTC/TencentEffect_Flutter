@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tencent_effect_flutter/api/tencent_effect_api.dart';
+import 'package:tencent_effect_flutter_demo/constant/te_constant.dart';
 import 'package:tencent_effect_flutter_demo/manager/te_param_manager.dart';
+import 'package:tencent_effect_flutter_demo/utils/producer_utils.dart';
 
 import '../model/te_ui_property.dart';
 import '../view/beauty_panel_view.dart';
@@ -14,6 +16,7 @@ class DefaultPanelViewCallBack implements BeautyPanelViewCallBack {
   List<TESDKParam>? _defaultEffectList;
   bool _isEnable = false;
   TEParamManager paramManager = TEParamManager();
+  bool hasLightMakeup = false;
 
   final bool _pickImg = true ; // true indicates selecting an image for custom background, false indicates selecting a video.
 
@@ -78,8 +81,7 @@ class DefaultPanelViewCallBack implements BeautyPanelViewCallBack {
     debugPrint("onUpdateEffect   ${sdkParam.toJson().toString()}");
     if (sdkParam.effectName != null) {
       paramManager.putTEParam(sdkParam);
-      TencentEffectApi.getApi()?.setEffect(sdkParam.effectName!,
-          sdkParam.effectValue, sdkParam.resourcePath, sdkParam.extraInfo);
+      _setEffect(sdkParam);
     }
   }
 
@@ -87,6 +89,24 @@ class DefaultPanelViewCallBack implements BeautyPanelViewCallBack {
   void onUpdateEffectList(List<TESDKParam> sdkParams) {
     for (TESDKParam sdkParam in sdkParams) {
       onUpdateEffect(sdkParam);
+    }
+  }
+
+  void _setEffect(TESDKParam sdkParam){
+    _clearLightMakeup(sdkParam);
+    TencentEffectApi.getApi()?.setEffect(sdkParam.effectName!,
+        sdkParam.effectValue, sdkParam.resourcePath, sdkParam.extraInfo);
+  }
+
+
+  void _clearLightMakeup(TESDKParam sdkParam) {
+    if (TEffectName.EFFECT_LIGHT_MAKEUP == sdkParam.effectName) {
+      hasLightMakeup = true;
+    }
+    if (hasLightMakeup && ProducerUtils.isPointMakeup(sdkParam)) {
+      hasLightMakeup = false;
+      TencentEffectApi.getApi()
+          ?.setEffect(TEffectName.EFFECT_LIGHT_MAKEUP, 0, null, null);
     }
   }
 }

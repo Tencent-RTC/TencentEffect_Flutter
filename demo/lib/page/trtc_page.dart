@@ -428,8 +428,8 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
   Widget renderView(item, valueKey, width, height) {
     return TRTCCloudVideoView(
         key: valueKey,
-        hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-        viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+        hitTestBehavior: PlatformViewHitTestBehavior.transparent,
+        viewType: TRTCCloudDef.TRTC_VideoView_TextureView,
         viewMode: TRTCCloudDef.TRTC_VideoView_Model_Virtual,
         onViewCreated: (viewId) async {
           if (item['userId'] == userInfo['userId']) {

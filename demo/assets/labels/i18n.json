@@ -76,7 +76,8 @@
     "demo_live_label4": "Is support Motions",
     "demo_live_label5": "Get Abilities By XmagicProperty",
     "panel_slider_type_makeup": "Makeup",
-    "panel_slider_type_lut": "Filter"
+    "panel_slider_type_lut": "Filter",
+    "effect_mode_des":"<![CDATA[\n        How to Choose a Effect Mode?\\n\\n\n\n        1. Normal Mode: This mode provides common beauty and shaping capabilities, which can meet the needs of most live streaming scenarios. It has good performance and is suitable for long-term operation on mid-to-low-end devices.\\n\n        2. Pro Mode: This mode offers richer beauty and shaping capabilities, providing extreme effects. However, it may cause lag or frame drops on low-end devices. It is recommended to use Pro Mode only on high-end devices (device level = 5).\\n\\n\n\n        Pro Mode includes all the capabilities of Normal Mode and optimizes/adds the following features:\\n\n        1. Beauty: More refined skin smoothing effects; added tanning capability.\\n\n        2. Image Quality Adjustment: Added low-light noise reduction capability.\\n\n        3. Facial Shaping: Added goddess face slimming, handsome face slimming; added face shape, chin reduction, nasolabial fold removal, wrinkle removal.\\n\n        4. Eye Shaping: Added eye width, eye height, eye position, eye bag removal, eye brightening.\\n\n        5. Eyebrow Shaping: Added eyebrow angle, distance, height, length, thickness, eyebrow peak.\\n\n        6. Mouth Shaping: Added smile lips.\\n\n        7. Nose Shaping: Added nose bridge, nasal root.\\n\n        8. Makeup: Added hair dyeing.\\n\n        9. Others: Whitening can be applied to skin only.\\n\\n\n\n        The SDK uses Normal Mode by default. To use Pro Mode, please call the setEffectMode interface of XMagicApi to enable it.\\n\n        For more information, please refer to the official documentation—>API Docs—>setEffect\n        ]]>"
   },
   "zh": {
     "none": "无",
@@ -155,6 +156,7 @@
     "demo_live_label4": "检测设备是否支持此动效",
     "demo_live_label5": "获取属性所需要的原子能力",
     "panel_slider_type_makeup": "美妆",
-    "panel_slider_type_lut": "滤镜"
+    "panel_slider_type_lut": "滤镜",
+    "effect_mode_des": "如何选择美颜模式？\n        1，Normal模式提供常用的美颜美型能力，能满足大多数直播场景，且性能较好，适合在中低端机上长时间运行。\n        2，Pro模式美颜美型能力更丰富，提供极致效果，但在低端机上可能卡顿、掉帧。建议仅在高端机(设备level = 5)上使用Pro模式。\n        Pro模式包含了Normal模式的全部能力，且优化/新增以下能力：\n        1，美颜：更精致的磨皮效果；增加美黑能力\n        2，画质调整：增加弱光降噪能力\n        3，面部美型：增加女神瘦脸、英俊瘦脸；增加脸型、收下颌、祛法令纹、祛皱\n        4，眼部美型：增加眼宽、眼高、眼睛位置、祛眼袋、亮眼\n        5，眉毛美型：增加眉毛角度、距离、高度、长度、粗细、眉峰\n        6，嘴部美型：增加微笑唇\n        7，鼻子美型：增加鼻梁、山根\n        8，美妆：增加染发\n        9，其他：美白可以仅对皮肤生效\n        SDK默认使用Normal模式，如需使用Pro模式，请调用XMagicApi的setEffectMode接口开启。\n        更多说明，请参考官网文档—>API文档—>setEffectMode "
   }
 }
