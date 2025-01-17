@@ -132,10 +132,10 @@ class _LivePageState extends State<LivePage> with WidgetsBindingObserver {
     }
     await _livePusher?.startMicrophone();
 
-    Future.delayed(const Duration(seconds: 3), () async {
-      _isFrontCamera = await _txDeviceManager?.isFrontCamera();
-      setState(() {});
-    });
+    // Future.delayed(const Duration(seconds: 3), () async {
+    //   _isFrontCamera = await _txDeviceManager?.isFrontCamera();
+    //   setState(() {});
+    // });
     enableBeauty(_isOpenBeauty);
   }
 
