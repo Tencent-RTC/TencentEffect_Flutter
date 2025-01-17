@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:orientation/orientation.dart';
 import 'package:tencent_effect_flutter/api/tencent_effect_api.dart';
 import 'package:tencent_effect_flutter/model/xmagic_property.dart';
 import 'package:tencent_effect_flutter/utils/Logs.dart';
@@ -20,6 +19,7 @@ import 'package:tencent_trtc_cloud/trtc_cloud_listener.dart';
 import '../../utils/GenerateTestUserSig.dart';
 import '../../utils/mettings_model.dart';
 import '../../utils/tool.dart';
+import '../utils/TEDeviceOrientation.dart';
 import '../view/beauty_panel_view.dart';
 import 'default_panel_view_callback.dart';
 
@@ -58,11 +58,10 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
   int quality = TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT;
 
   bool _isOpenBeauty = true;
-  TEImageOrientation _orientation = TEImageOrientation.ROTATION_0;
-  StreamSubscription? _subscription;
+  late TEDeviceOrientation _deviceOrientation;
 
   final DefaultPanelViewCallBack beautyPanelViewCallBack =
-  DefaultPanelViewCallBack();
+      DefaultPanelViewCallBack();
 
   @override
   initState() {
@@ -106,46 +105,47 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
     enableBeauty(_isOpenBeauty);
   }
 
+  TEImageOrientation getTEImageOrientationByDeviceDirection(
+      TEDeviceDirection direction) {
+    TEImageOrientation orientation = TEImageOrientation.ROTATION_0;
+    if (Platform.isAndroid) {
+      if (direction == TEDeviceDirection.portraitUp) {
+        orientation = TEImageOrientation.ROTATION_0;
+      } else if (direction == TEDeviceDirection.portraitDown) {
+        orientation = TEImageOrientation.ROTATION_180;
+      } else if (direction == TEDeviceDirection.landscapeLeft) {
+        orientation = isFrontCamera
+            ? TEImageOrientation.ROTATION_270
+            : TEImageOrientation.ROTATION_90;
+      } else if (direction == TEDeviceDirection.landscapeRight) {
+        orientation = isFrontCamera
+            ? TEImageOrientation.ROTATION_90
+            : TEImageOrientation.ROTATION_270;
+      }
+    } else if (Platform.isIOS) {
+      if (direction == TEDeviceDirection.portraitUp) {
+        orientation = TEImageOrientation.ROTATION_0;
+      } else if (direction == TEDeviceDirection.portraitDown) {
+        orientation = TEImageOrientation.ROTATION_180;
+      } else if (direction == TEDeviceDirection.landscapeLeft) {
+        orientation = isFrontCamera
+            ? TEImageOrientation.ROTATION_90
+            : TEImageOrientation.ROTATION_270;
+      } else if (direction == TEDeviceDirection.landscapeRight) {
+        orientation = isFrontCamera
+            ? TEImageOrientation.ROTATION_270
+            : TEImageOrientation.ROTATION_90;
+      }
+    }
+    return orientation;
+  }
 
   void listenerOrientation() {
-    _subscription = OrientationPlugin.onOrientationChange.listen((value) {
+    _deviceOrientation = TEDeviceOrientation();
+    _deviceOrientation.start((TEDeviceDirection direction) {
       if (!mounted) return;
-      if (value == DeviceOrientation.landscapeLeft) {
-        debugPrint("listenerOrientation  landscapeLeft");
-        if (_orientation == TEImageOrientation.ROTATION_90) {
-          return;
-        }
-        if (Platform.isIOS) {
-          _orientation = TEImageOrientation.ROTATION_270;
-        } else {
-          _orientation = TEImageOrientation.ROTATION_90;
-        }
-      } else if (value == DeviceOrientation.landscapeRight) {
-        debugPrint("listenerOrientation  landscapeRight");
-        if (_orientation == TEImageOrientation.ROTATION_270) {
-          return;
-        }
-        if (Platform.isIOS) {
-          _orientation = TEImageOrientation.ROTATION_90;
-        } else {
-          _orientation = TEImageOrientation.ROTATION_270;
-        }
-      } else if (value == DeviceOrientation.portraitUp) {
-        debugPrint("listenerOrientation  portraitUp");
-        if (_orientation == TEImageOrientation.ROTATION_0) {
-          return;
-        }
-        _orientation = TEImageOrientation.ROTATION_0;
-      } else if (value == DeviceOrientation.portraitDown) {
-        debugPrint("listenerOrientation  portraitDown");
-        if (_orientation == TEImageOrientation.ROTATION_180) {
-          return;
-        }
-        _orientation = TEImageOrientation.ROTATION_180;
-      }
-      TXLog.printlog("TEImageOrientation   ${_orientation.toType()}");
       if (_isOpenBeauty) {
-        TencentEffectApi.getApi()?.setImageOrientation(_orientation);
+        TencentEffectApi.getApi()?.setImageOrientation(getTEImageOrientationByDeviceDirection(direction));
       }
     });
   }
@@ -267,7 +267,7 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
 
   @override
   dispose() async {
-    _subscription?.cancel();
+    _deviceOrientation.stop();
     destroyRoom();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -415,8 +415,9 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
             ),
             TextButton(
               child: const Text("Confirm"),
-              onPressed: () {
-                Navigator.of(context).pop(true);
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _onBackPress(true);
               },
             ),
           ],

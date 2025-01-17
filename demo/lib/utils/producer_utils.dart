@@ -16,6 +16,7 @@ class ProducerUtils {
   ];
 
   static final List<String> BEAUTY_WHITEN_EFFECT_NAMES = [
+    TEffectName.BEAUTY_WHITEN_0,
     TEffectName.BEAUTY_WHITEN,
     TEffectName.BEAUTY_WHITEN_2,
     TEffectName.BEAUTY_WHITEN_3,
