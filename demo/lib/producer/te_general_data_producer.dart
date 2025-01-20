@@ -168,6 +168,7 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
 
       if (teuiProperty != null) {
         teuiProperty.sdkParam!.effectValue = param.effectValue;
+        teuiProperty.sdkParam!.extraInfo = param.extraInfo;
         if (teuiProperty.uiCategory == UICategory.BEAUTY ||
             teuiProperty.uiCategory == UICategory.BODY_BEAUTY) {
           teuiProperty.setUiState(UIState.IN_USE);
