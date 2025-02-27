@@ -34,8 +34,8 @@ dependencies:
 
   tencent_effect_flutter:
     path: ../
-  live_flutter_plugin: 11.7.0
-  tencent_trtc_cloud: 2.9.4
+  live_flutter_plugin: 11.4.4
+  tencent_trtc_cloud: 2.5.9
   cupertino_icons: ^1.0.2
   sensors_plus: ^6.1.1
 
