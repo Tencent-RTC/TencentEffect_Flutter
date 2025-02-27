@@ -142,7 +142,9 @@ class _HomeState extends State<HomePage> {
   }
 
   void _initSettings(InitXmagicCallBack callBack) async {
-    _setResourcePath();
+    String resourceDir = await ResPathManager.getResManager().getResPath();
+    TXLog.printlog('$TAG method is _initResource ,xmagic resource dir is $resourceDir');
+    TencentEffectApi.getApi()?.setResourcePath(resourceDir);
 
     /// Copying the resource only needs to be done once. Once it has been successfully copied in the current version, there is no need to copy it again in future versions.
     if (await isCopiedRes()) {
@@ -153,12 +155,7 @@ class _HomeState extends State<HomePage> {
     }
   }
 
-  void _setResourcePath() async {
-    String resourceDir = await ResPathManager.getResManager().getResPath();
-    TXLog.printlog(
-        '$TAG method is _initResource ,xmagic resource dir is $resourceDir');
-    TencentEffectApi.getApi()?.setResourcePath(resourceDir);
-  }
+ 
 
   void _copyRes(InitXmagicCallBack callBack) {
     _showDialog(context);

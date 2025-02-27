@@ -89,7 +89,11 @@ static XmagicApiManager *shareSingleton = nil;
         NSString *bundlePath = [[NSBundle mainBundle] pathForResource:_resNames[i] ofType:@"bundle"];
         if (bundlePath !=nil) {
             NSString *path = [NSString stringWithFormat:@"%@/%@.bundle",self.xmagicResPath,_resNames[i]];
-            if(![[NSFileManager  defaultManager] fileExistsAtPath:path]){
+            if([[NSFileManager  defaultManager] fileExistsAtPath:bundlePath]){
+                if ([[NSFileManager  defaultManager] fileExistsAtPath:path]) {
+                    NSError *error = nil;
+                    [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
+                }
                 [[NSFileManager defaultManager] copyItemAtPath:bundlePath toPath:path error:&error];
                 if (error != nil) {
                     NSLog(@"xmagic init resource error：%@",error.description);
@@ -117,15 +121,14 @@ static XmagicApiManager *shareSingleton = nil;
         [fileManager fileExistsAtPath:bundleItemFullPath isDirectory:&isDirectory];
         
         NSString *sandboxItemFullPath = [sandboxFolderPath stringByAppendingPathComponent:itemName];
-            
-
-        if (![fileManager fileExistsAtPath:sandboxItemFullPath]) {
-
-            NSError *error;
-            [fileManager copyItemAtPath:bundleItemFullPath toPath:sandboxItemFullPath error:&error];
-            if (error) {
-                NSLog(@"error: %@", error.localizedDescription);
-            }
+        if ([[NSFileManager  defaultManager] fileExistsAtPath:sandboxItemFullPath]) {
+            NSError *error = nil;
+            [[NSFileManager defaultManager] removeItemAtPath:sandboxItemFullPath error:&error];
+        }
+        NSError *error;
+        [fileManager copyItemAtPath:bundleItemFullPath toPath:sandboxItemFullPath error:&error];
+        if (error) {
+            NSLog(@"error: %@", error.localizedDescription);
         }
     }
 }
