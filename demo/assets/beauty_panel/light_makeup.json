@@ -27,10 +27,7 @@
             "icon":"beauty_panel/panel_icon/light_makeup_icon/light_danyan.png",
             "resourceUri":"MotionRes/light_makeup/light_danyan",
             "sdkParam":{
-                "effectValue":50,
-                "extraInfo":{
-                    "makeupLutStrength":"50"
-                }
+                "effectValue":50
             }
         }
     ]

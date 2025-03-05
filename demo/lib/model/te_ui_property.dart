@@ -87,8 +87,7 @@ class TESDKParam {
   static const String EXTRA_INFO_KEY_BG_PATH = "bgPath";
   static const String EXTRA_INFO_KEY_SEG_TYPE = "segType";
   static const String EXTRA_INFO_KEY_KEY_COLOR = "keyColor";
-  static const String EXTRA_INFO_KEY_MERGE_WITH_CURRENT_MOTION =
-      "mergeWithCurrentMotion";
+  static const String EXTRA_INFO_KEY_MERGE_WITH_CURRENT_MOTION = "mergeWithCurrentMotion";
   static const String EXTRA_INFO_KEY_LUT_STRENGTH = "makeupLutStrength";
 
   String? effectName;
@@ -211,73 +210,39 @@ class EffectValueType {
 
 
   static const Map<String, EffectValueType> VALUE_TYPE_MAP = {
-    TEffectName.EFFECT_MOTION:
-      EffectValueType.RANGE_0_0,
-    TEffectName.EFFECT_SEGMENTATION:
-    EffectValueType.RANGE_0_0,
-
-    TEffectName.BEAUTY_CONTRAST:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_SATURATION:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_IMAGE_WARMTH:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_IMAGE_TINT:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_IMAGE_BRIGHTNESS:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_EYE_DISTANCE:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_EYE_ANGLE:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_EYE_WIDTH:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_EYE_HEIGHT:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_EYE_OUT_CORNER:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_EYE_POSITION:
-    EffectValueType.RANGE_NEG100_POS100,
-
-    TEffectName.BEAUTY_EYEBROW_ANGLE:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_EYEBROW_DISTANCE:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_EYEBROW_HEIGHT:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_EYEBROW_LENGTH:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_EYEBROW_THICKNESS:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_EYEBROW_RIDGE:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_NOSE_WING:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_NOSE_HEIGHT:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_NOSE_BRIDGE_WIDTH:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_NASION:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_MOUTH_SIZE:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_MOUTH_HEIGHT:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_MOUTH_WIDTH:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_MOUTH_POSITION:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_SMILE_FACE:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_FACE_THIN_CHIN:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BEAUTY_FACE_FOREHEAD:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BODY_ENLARGE_CHEST_STRENGTH:
-    EffectValueType.RANGE_NEG100_POS100,
-    TEffectName.BODY_SLIM_ARM_STRENGTH:
-    EffectValueType.RANGE_NEG100_POS100
-
+    TEffectName.EFFECT_MOTION: EffectValueType.RANGE_0_0,
+    TEffectName.EFFECT_SEGMENTATION: EffectValueType.RANGE_0_0,
+    TEffectName.BEAUTY_CONTRAST: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_SATURATION: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_IMAGE_WARMTH: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_IMAGE_TINT: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_IMAGE_BRIGHTNESS: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYE_DISTANCE: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYE_ANGLE: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYE_WIDTH: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYE_HEIGHT: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYE_OUT_CORNER: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYE_POSITION: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYEBROW_ANGLE: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYEBROW_DISTANCE: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYEBROW_HEIGHT: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYEBROW_LENGTH: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYEBROW_THICKNESS: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_EYEBROW_RIDGE: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_NOSE_WING: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_NOSE_HEIGHT: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_NOSE_BRIDGE_WIDTH: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_NASION: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_MOUTH_SIZE: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_MOUTH_HEIGHT: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_MOUTH_WIDTH: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_MOUTH_POSITION: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_SMILE_FACE: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_FACE_THIN_CHIN: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_FACE_FOREHEAD: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BEAUTY_FACE_FOREHEAD2: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BODY_ENLARGE_CHEST_STRENGTH: EffectValueType.RANGE_NEG100_POS100,
+    TEffectName.BODY_SLIM_ARM_STRENGTH: EffectValueType.RANGE_NEG100_POS100
   };
 
   static EffectValueType getEffectValueType(TESDKParam teParam) {

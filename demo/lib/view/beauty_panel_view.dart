@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tencent_effect_flutter/utils/Logs.dart';
 import 'package:tencent_effect_flutter_demo/utils/panel_display.dart';
 import '../config/te_res_config.dart';
 import '../constant/te_constant.dart';
@@ -10,14 +9,14 @@ import '../producer/te_panel_data_producer.dart';
 import 'beauty_panel_view_callback.dart';
 
 class BeautyPanelView extends StatefulWidget {
+  static const String MAKEUP_LUT_STRENGTH_KEY = 'makeupLutStrength';
+
   final BeautyPanelViewCallBack? _beautyPanelViewCallBack;
 
   final int onSliderUpdateValueType; //Default means callback in onChanged method 2. means call in onChangeEnd
   final TEPanelDataProducer? panelDataProducer;
 
-  const BeautyPanelView(this._beautyPanelViewCallBack, this.panelDataProducer,
-      {Key? key, this.onSliderUpdateValueType = 1})
-      : super(key: key);
+  const BeautyPanelView(this._beautyPanelViewCallBack, this.panelDataProducer, {Key? key, this.onSliderUpdateValueType = 1}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -27,9 +26,9 @@ class BeautyPanelView extends StatefulWidget {
 
 class PanelViewState extends State<BeautyPanelView> {
   final ScrollController _scrollController = ScrollController();
-  final List<double> _listViewOffset = [];  
-  Map<String, double> typeDataListViewOffset = {}; 
-  bool _isShowSlider = false; 
+  final List<double> _listViewOffset = [];
+  Map<String, double> typeDataListViewOffset = {};
+  bool _isShowSlider = false;
   double _progressMin = 0;
   double _progressMax = 100;
   double _currentProgress = 0;
@@ -39,9 +38,7 @@ class PanelViewState extends State<BeautyPanelView> {
 
   bool _isShowSubTitleLayout = false; //
 
-
   List<TEUIProperty>? _currentList;
-
 
   List<TEUIProperty>? _panelViewData;
 
@@ -58,11 +55,9 @@ class PanelViewState extends State<BeautyPanelView> {
       _tePanelDataProducer = widget.panelDataProducer!;
     } else {
       _tePanelDataProducer = TEGeneralDataProducer();
-      debugPrint(
-          "TEResConfig.getConfig().defaultPanelDataList  ${TEResConfig.getConfig().defaultPanelDataList.length}");
+      debugPrint("TEResConfig.getConfig().defaultPanelDataList  ${TEResConfig.getConfig().defaultPanelDataList.length}");
 
-      _tePanelDataProducer
-          .setPanelDataList(TEResConfig.getConfig().defaultPanelDataList);
+      _tePanelDataProducer.setPanelDataList(TEResConfig.getConfig().defaultPanelDataList);
     }
     _getPanelViewData();
   }
@@ -70,8 +65,7 @@ class PanelViewState extends State<BeautyPanelView> {
   void _getPanelViewData() async {
     var data = await _tePanelDataProducer.getPanelData();
     if (widget._beautyPanelViewCallBack != null) {
-      List<TESDKParam> usedProperties =
-          _tePanelDataProducer.getUsedProperties();
+      List<TESDKParam> usedProperties = _tePanelDataProducer.getUsedProperties();
       widget._beautyPanelViewCallBack?.onDefaultEffectList(usedProperties);
     }
     var dataList = _tePanelDataProducer.getFirstCheckedItems();
@@ -96,10 +90,7 @@ class PanelViewState extends State<BeautyPanelView> {
           color: Colors.black54,
           child: Column(
             children: [
-              _isShowSubTitleLayout
-                  ? _buildSubTitleLayout()
-                  : _buildMainTitleLayout(context),
-
+              _isShowSubTitleLayout ? _buildSubTitleLayout() : _buildMainTitleLayout(context),
               SizedBox(
                 height: 100,
                 child: ListView.builder(
@@ -115,7 +106,6 @@ class PanelViewState extends State<BeautyPanelView> {
       ],
     );
   }
-
 
   Widget _buildSubTitleLayout() {
     return Flex(
@@ -141,13 +131,13 @@ class PanelViewState extends State<BeautyPanelView> {
     );
   }
 
-
   ///create type layout
   Widget _buildMainTitleLayout(BuildContext context) {
     List<Widget> titlesView = [];
     if (_panelViewData == null) {
       return Container();
     }
+    bool hasFirstItemChecked = false;
     for (TEUIProperty property in _panelViewData!) {
       titlesView.add(TextButton(
         onPressed: () {
@@ -157,12 +147,12 @@ class PanelViewState extends State<BeautyPanelView> {
           PanelDisplay.getDisplayName(property)!,
           maxLines: 1,
           textAlign: TextAlign.center,
-          style: TextStyle(
-              color: property.uiState == UIState.CHECKED_AND_IN_USE
-                  ? Colors.blue
-                  : Colors.white),
+          style: TextStyle(color: property.uiState == UIState.CHECKED_AND_IN_USE && !hasFirstItemChecked ? Colors.blue : Colors.white),
         ),
       ));
+      if (property.uiState == UIState.CHECKED_AND_IN_USE) {
+        hasFirstItemChecked = true;
+      }
     }
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -173,7 +163,6 @@ class PanelViewState extends State<BeautyPanelView> {
       ),
     );
   }
-
 
   ///create slider layout
   Widget _buildSlider(BuildContext context) {
@@ -191,14 +180,12 @@ class PanelViewState extends State<BeautyPanelView> {
               var localValue = value.round().toInt();
               if (localValue != _currentProgress) {
                 if (_isShowSliderTypeLayout && _isSelectedLut()) {
-                  _currentSDKParam!.extraInfo!['makeupLutStrength'] =
-                      localValue.toString();
+                  _currentSDKParam!.extraInfo![BeautyPanelView.MAKEUP_LUT_STRENGTH_KEY] = localValue.toString();
                 } else {
                   _currentSDKParam?.effectValue = localValue;
                 }
                 if (widget.onSliderUpdateValueType == 1) {
-                  widget._beautyPanelViewCallBack
-                      ?.onUpdateEffect(_currentSDKParam!);
+                  widget._beautyPanelViewCallBack?.onUpdateEffect(_currentSDKParam!);
                 }
               }
               setState(() {
@@ -207,8 +194,7 @@ class PanelViewState extends State<BeautyPanelView> {
             },
             onChangeEnd: (value) {
               if (widget.onSliderUpdateValueType == 2) {
-                widget._beautyPanelViewCallBack
-                    ?.onUpdateEffect(_currentSDKParam!);
+                widget._beautyPanelViewCallBack?.onUpdateEffect(_currentSDKParam!);
               }
             },
             min: _progressMin,
@@ -231,7 +217,8 @@ class PanelViewState extends State<BeautyPanelView> {
         selectedBorderColor: Colors.blueGrey,
         textStyle: const TextStyle(fontSize: 12),
         isSelected: _selectedList,
-        color: Colors.black12,
+        color: Colors.white70,
+        fillColor: Colors.white,
         selectedColor: Colors.black,
         children: <Widget>[
           Text(AppLocalizations.of(context)?.getPanelSliderTypeMakeup ?? ""),
@@ -241,7 +228,6 @@ class PanelViewState extends State<BeautyPanelView> {
       ),
     );
   }
-
 
   void _onSliderTypeClick(index) {
     var length = _selectedList.length;
@@ -253,16 +239,13 @@ class PanelViewState extends State<BeautyPanelView> {
     _setSliderState(_currentSDKParam);
   }
 
-
   Widget _buildListViewItemIcon(int index) {
     if (_currentList?[index].icon?.isNotEmpty ?? false) {
       return Container(
         width: 45,
         height: 45,
         decoration: _currentList?[index].uiState == UIState.CHECKED_AND_IN_USE
-            ? BoxDecoration(
-                border: Border.all(width: 2, color: Colors.blue.shade500),
-                borderRadius: BorderRadius.circular(10))
+            ? BoxDecoration(border: Border.all(width: 2, color: Colors.blue.shade500), borderRadius: BorderRadius.circular(10))
             : null,
         child: Image.asset(
           "assets/${_currentList?[index].icon}",
@@ -273,7 +256,6 @@ class PanelViewState extends State<BeautyPanelView> {
     }
     return Container();
   }
-
 
   ///create listview items
   Widget buildListViewItem(BuildContext context, int index) {
@@ -291,9 +273,7 @@ class PanelViewState extends State<BeautyPanelView> {
           Container(
               margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
               child: Text(
-                _currentList?[index] == null
-                    ? ""
-                    : PanelDisplay.getDisplayName(_currentList![index])!,
+                _currentList?[index] == null ? "" : PanelDisplay.getDisplayName(_currentList![index])!,
                 style: const TextStyle(color: Colors.white, fontSize: 11),
                 textAlign: TextAlign.center,
               )),
@@ -301,9 +281,7 @@ class PanelViewState extends State<BeautyPanelView> {
             width: 5,
             height: 5,
             decoration: BoxDecoration(
-                color: _isShowPoint(_currentList?[index])
-                    ? Colors.blue
-                    : Colors.transparent,
+                color: _isShowPoint(_currentList?[index]) ? Colors.blue : Colors.transparent,
                 borderRadius: const BorderRadius.all(Radius.circular(3))),
           ),
         ],
@@ -333,14 +311,11 @@ class PanelViewState extends State<BeautyPanelView> {
     return false;
   }
 
-
   void onSubTitleBackBtnClick() {
     if (_currentList != null) {
       TEUIProperty titleProperty = _getParentProperty();
       TEUIProperty? parentUIProperty = titleProperty.parentUIProperty;
-      if (parentUIProperty == null ||
-          parentUIProperty.parentUIProperty == null) {
-
+      if (parentUIProperty == null || parentUIProperty.parentUIProperty == null) {
         for (TEUIProperty property in _panelViewData!) {
           if (property.uiState == UIState.CHECKED_AND_IN_USE) {
             setState(() {
@@ -348,7 +323,7 @@ class PanelViewState extends State<BeautyPanelView> {
               _currentList = property.propertyList;
             });
             _scrollController.jumpTo(_listViewOffset.removeLast());
-            _setSliderState(null);  
+            _setSliderState(null);
             return;
           }
         }
@@ -360,7 +335,7 @@ class PanelViewState extends State<BeautyPanelView> {
         });
       }
       _scrollController.jumpTo(_listViewOffset.removeLast());
-      _setSliderState(null);  
+      _setSliderState(null);
     }
   }
 
@@ -369,14 +344,10 @@ class PanelViewState extends State<BeautyPanelView> {
     return uiProperty.parentUIProperty!;
   }
 
-
   void _onMainTitleItemClick(TEUIProperty uiProperty) {
     for (TEUIProperty property in _panelViewData!) {
-
       if (property.uiState == UIState.CHECKED_AND_IN_USE) {
-
-        typeDataListViewOffset[_getTypeDataListViewOffsetKey(property)] =
-            _scrollController.offset;
+        typeDataListViewOffset[_getTypeDataListViewOffsetKey(property)] = _scrollController.offset;
         break;
       }
     }
@@ -387,23 +358,18 @@ class PanelViewState extends State<BeautyPanelView> {
     });
     double? offset = typeDataListViewOffset[_getTypeDataListViewOffsetKey(uiProperty)];
     _scrollController.jumpTo(offset ?? 0);
-    _setSliderState(null);   
+    _setSliderState(null);
   }
-
 
   /// item click
   void _onListViewItemClick(int index) {
     TEUIProperty uiProperty = _currentList![index];
-    if (uiProperty.sdkParam?.extraInfo?[TESDKParam.EXTRA_INFO_KEY_SEG_TYPE] ==
-            TESDKParam.EXTRA_INFO_SEG_TYPE_GREEN ||
-        uiProperty.sdkParam?.extraInfo?[TESDKParam.EXTRA_INFO_KEY_SEG_TYPE] ==
-            TESDKParam.EXTRA_INFO_SEG_TYPE_CUSTOM) {
-
+    if (uiProperty.sdkParam?.extraInfo?[TESDKParam.EXTRA_INFO_KEY_SEG_TYPE] == TESDKParam.EXTRA_INFO_SEG_TYPE_GREEN ||
+        uiProperty.sdkParam?.extraInfo?[TESDKParam.EXTRA_INFO_KEY_SEG_TYPE] == TESDKParam.EXTRA_INFO_SEG_TYPE_CUSTOM) {
       widget._beautyPanelViewCallBack?.onClickCustomSeg(uiProperty);
       return;
     }
-    List<TEUIProperty>? resultList =
-        _tePanelDataProducer.onItemClick(uiProperty);
+    List<TEUIProperty>? resultList = _tePanelDataProducer.onItemClick(uiProperty);
     if (resultList != null && resultList.isNotEmpty) {
       _listViewOffset.add(_scrollController.offset);
 
@@ -418,9 +384,7 @@ class PanelViewState extends State<BeautyPanelView> {
     } else {
       _currentSDKParam = uiProperty.sdkParam;
       if (uiProperty.isNoneItem()) {
-
-        List<TESDKParam>? closeEffectList =
-            _tePanelDataProducer.getCloseEffectItems(uiProperty);
+        List<TESDKParam>? closeEffectList = _tePanelDataProducer.getCloseEffectItems(uiProperty);
         if (closeEffectList != null) {
           widget._beautyPanelViewCallBack?.onUpdateEffectList(closeEffectList);
         }
@@ -433,16 +397,16 @@ class PanelViewState extends State<BeautyPanelView> {
     _setSliderState(_currentSDKParam);
   }
 
-
   void _setSliderState(TESDKParam? sdkParam) {
     bool isShowSlider = false;
+    /// Controls the visibility of the slider type layout (makeup/lut toggle buttons)
     bool isShowSliderTypeLayout = false;
     EffectValueType valueType = EffectValueType.RANGE_0_0;
     if (sdkParam != null) {
-      isShowSliderTypeLayout = sdkParam.effectName == TEffectName.EFFECT_MAKEUP;
+      isShowSliderTypeLayout = (sdkParam.effectName == TEffectName.EFFECT_MAKEUP || sdkParam.effectName == TEffectName.EFFECT_LIGHT_MAKEUP) &&
+          (sdkParam.extraInfo?[BeautyPanelView.MAKEUP_LUT_STRENGTH_KEY] != null);
       valueType = EffectValueType.getEffectValueType(sdkParam);
       if (valueType == EffectValueType.RANGE_0_0) {
-
         isShowSlider = false;
       } else {
         isShowSlider = true;
@@ -450,8 +414,7 @@ class PanelViewState extends State<BeautyPanelView> {
     }
     var makeupLutStrengthDouble = 0.0;
     if (isShowSlider && isShowSliderTypeLayout && _isSelectedLut()) {
-
-      String? makeupLutStrength = sdkParam!.extraInfo!['makeupLutStrength'];
+      String? makeupLutStrength = sdkParam!.extraInfo![BeautyPanelView.MAKEUP_LUT_STRENGTH_KEY];
       if (makeupLutStrength != null) {
         makeupLutStrengthDouble = double.parse(makeupLutStrength);
       } else {
@@ -485,14 +448,9 @@ class PanelViewState extends State<BeautyPanelView> {
     _setSliderState(uiProperty.sdkParam);
   }
 
-
   String _getTypeDataListViewOffsetKey(TEUIProperty property) {
     return "${property.displayName}${property.displayNameEn}";
   }
 
-
-
-  void _clickItem(TESDKParam sdkParam){
-
-  }
+  void _clickItem(TESDKParam sdkParam) {}
 }

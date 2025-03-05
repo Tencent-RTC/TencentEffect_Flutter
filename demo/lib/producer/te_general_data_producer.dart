@@ -10,18 +10,13 @@ import '../model/te_panel_data_model.dart';
 import '../model/te_ui_property.dart';
 import '../utils/producer_utils.dart';
 
-
 class TEGeneralDataProducer implements TEPanelDataProducer {
   List<TEPanelDataModel>? _panelDataList;
   List<TEUIProperty> _allData = [];
   List<TESDKParam> _originalParamList = [];
-    final Map<UICategory, TEUIProperty> _dataCategory = {};
+  final Map<UICategory, TEUIProperty> _dataCategory = {};
 
-
-
-  final Map<String, TEUIProperty> _uiPropertyIndexByNameMap =
-      HashMap<String, TEUIProperty>();
-
+  final Map<String, TEUIProperty> _uiPropertyIndexByNameMap = HashMap<String, TEUIProperty>();
 
   bool hasLightMakeup = false;
   bool pointMakeupChecked = false;
@@ -58,8 +53,7 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
       TEUIProperty uiProperty = TEUIProperty.fromJson(map);
       uiProperty.uiCategory = dataModel.category;
       if (uiProperty.propertyList != null) {
-        _completionParam(
-            uiProperty.propertyList!, dataModel.category, uiProperty);
+        await _completionParam(uiProperty.propertyList!, dataModel.category, uiProperty);
       }
       _putDataToMap(uiProperty);
       result.add(uiProperty);
@@ -78,7 +72,7 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
         lightMakeupChecked = ProducerUtils.getUsedProperties([uiProperty]).isNotEmpty;
       }
     }
-    syncUIState();
+    syncUIState(result);
     return result;
   }
 
@@ -90,20 +84,17 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
       for (TEUIProperty uiProperty in teuiProperty.propertyList!) {
         obtainPointMakeup(uiProperty);
       }
-    } else if (teuiProperty.sdkParam != null &&
-        ProducerUtils.isPointMakeup(teuiProperty.sdkParam!)) {
+    } else if (teuiProperty.sdkParam != null && ProducerUtils.isPointMakeup(teuiProperty.sdkParam!)) {
       pointMakeup.add(teuiProperty);
     }
   }
 
-  void _completionParam(List<TEUIProperty> list, UICategory category,
-      TEUIProperty parentProperty) {
+  Future<void> _completionParam(List<TEUIProperty> list, UICategory category, TEUIProperty parentProperty) async {
     for (TEUIProperty property in list) {
       property.parentUIProperty = parentProperty;
-      property.uiCategory = category; 
+      property.uiCategory = category;
       ProducerUtils.createDlModelAndSDKParam(property, category);
       if (property.sdkParam != null) {
-
         switch (category) {
           case UICategory.LUT:
             property.sdkParam!.effectName = TEffectName.EFFECT_LUT;
@@ -124,14 +115,13 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
             break;
         }
       }
-      ProducerUtils.completionResPath(property);
+      await ProducerUtils.completionResPath(property);
       _putDataToMap(property);
       if (property.propertyList != null) {
-        _completionParam(property.propertyList!, category, property);
+        await _completionParam(property.propertyList!, category, property);
       }
     }
   }
-
 
   ///
   /// @param property
@@ -139,7 +129,7 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
     if (_originalParamList.isEmpty) {
       return;
     }
-    property.setUiState(UIState.INIT); 
+    property.setUiState(UIState.INIT);
     if (property.sdkParam != null) {
       _uiPropertyIndexByNameMap[_getNameMapKey(property.sdkParam!)] = property;
     }
@@ -156,36 +146,29 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
     return keyBuilder.toString();
   }
 
-
-  void syncUIState() {
+  void syncUIState(List<TEUIProperty> allData) {
     if (_originalParamList.isEmpty) {
       return;
     }
     for (TESDKParam param in _originalParamList) {
-
-      TEUIProperty? teuiProperty =
-          _uiPropertyIndexByNameMap[_getNameMapKey(param)];
+      TEUIProperty? teuiProperty = _uiPropertyIndexByNameMap[_getNameMapKey(param)];
 
       if (teuiProperty != null) {
         teuiProperty.sdkParam!.effectValue = param.effectValue;
         teuiProperty.sdkParam!.extraInfo = param.extraInfo;
-        if (teuiProperty.uiCategory == UICategory.BEAUTY ||
-            teuiProperty.uiCategory == UICategory.BODY_BEAUTY) {
+        if (teuiProperty.uiCategory == UICategory.BEAUTY || teuiProperty.uiCategory == UICategory.BODY_BEAUTY) {
           teuiProperty.setUiState(UIState.IN_USE);
           ProducerUtils.changeParentUIState(teuiProperty, UIState.IN_USE);
         } else {
           teuiProperty.setUiState(UIState.CHECKED_AND_IN_USE);
-          ProducerUtils.changeParentUIState(
-              teuiProperty, UIState.CHECKED_AND_IN_USE);
+          ProducerUtils.changeParentUIState(teuiProperty, UIState.CHECKED_AND_IN_USE);
         }
       }
     }
     List<TEUIProperty> allBeautyPropertyList = [];
-    for (TEUIProperty teuiProperty in _allData) {
-      if (teuiProperty.uiCategory == UICategory.BODY_BEAUTY &&
-          teuiProperty.propertyList != null) {
-        ProducerUtils.findFirstInUseItemAndMakeChecked(
-            teuiProperty.propertyList);
+    for (TEUIProperty teuiProperty in allData) {
+      if (teuiProperty.uiCategory == UICategory.BODY_BEAUTY && teuiProperty.propertyList != null) {
+        ProducerUtils.findFirstInUseItemAndMakeChecked(teuiProperty.propertyList);
       }
       if (teuiProperty.uiCategory == UICategory.BEAUTY) {
         allBeautyPropertyList.add(teuiProperty);
@@ -198,7 +181,6 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
 
   @override
   List<TESDKParam>? getCloseEffectItems(TEUIProperty uiProperty) {
-
     switch (uiProperty.uiCategory) {
       case UICategory.BEAUTY:
       case UICategory.BODY_BEAUTY:
@@ -223,21 +205,19 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
 
   @override
   List<TESDKParam> getRevertData() {
-
     List<TESDKParam> usedList = ProducerUtils.getUsedProperties(_allData);
     bool hasLut = false;
     bool hasMotion = false;
     for (TESDKParam param in usedList) {
-      if (identical(param.effectName,TEffectName.EFFECT_LUT)) {
+      if (identical(param.effectName, TEffectName.EFFECT_LUT)) {
         hasLut = true;
       }
-      if (param.effectName == TEffectName.EFFECT_MAKEUP
-          || param.effectName == TEffectName.EFFECT_MOTION
-          || param.effectName == TEffectName.EFFECT_SEGMENTATION) {
+      if (param.effectName == TEffectName.EFFECT_MAKEUP ||
+          param.effectName == TEffectName.EFFECT_MOTION ||
+          param.effectName == TEffectName.EFFECT_SEGMENTATION) {
         hasMotion = true;
       }
     }
-
 
     forceRefreshPanelData();
 
@@ -247,9 +227,9 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
       if (identical(param.effectName, TEffectName.EFFECT_LUT)) {
         hasLut = false;
       }
-      if (param.effectName == TEffectName.EFFECT_MAKEUP
-          || param.effectName == TEffectName.EFFECT_MOTION
-          || param.effectName == TEffectName.EFFECT_SEGMENTATION) {
+      if (param.effectName == TEffectName.EFFECT_MAKEUP ||
+          param.effectName == TEffectName.EFFECT_MOTION ||
+          param.effectName == TEffectName.EFFECT_SEGMENTATION) {
         hasMotion = false;
       }
     }
@@ -280,8 +260,8 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
       case UICategory.BEAUTY:
       case UICategory.BODY_BEAUTY:
       case UICategory.LUT:
-         checkItem(uiProperty);
-         onClickPointMakeup(uiProperty);
+        checkItem(uiProperty);
+        onClickPointMakeup(uiProperty);
         break;
       case UICategory.LIGHT_MAKEUP:
         onClickLightMakeup(uiProperty);
@@ -311,9 +291,7 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
 
   void onClickPointMakeup(TEUIProperty property) {
     checkItem(property);
-    if (hasLightMakeup &&
-        property.sdkParam != null &&
-        ProducerUtils.isPointMakeup(property.sdkParam!)) {
+    if (hasLightMakeup && property.sdkParam != null && ProducerUtils.isPointMakeup(property.sdkParam!)) {
       //只有在有轻美妆的情况下才会继续判断点击的是否是 单点妆容
       pointMakeupChecked = true;
       if (!lightMakeupChecked) {
@@ -344,8 +322,6 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
     }
   }
 
-
-
   void uncheckLightMakeup() {
     TEUIProperty? lightMakeup = _dataCategory[UICategory.LIGHT_MAKEUP];
     if (lightMakeup == null) {
@@ -366,7 +342,7 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
 
   @override
   void onTabItemClick(TEUIProperty uiProperty) {
-    for(TEUIProperty property in _allData){
+    for (TEUIProperty property in _allData) {
       if (property == uiProperty) {
         property.setUiState(UIState.CHECKED_AND_IN_USE);
       } else {
@@ -378,8 +354,7 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
   @override
   List<TEUIProperty>? getFirstCheckedItems() {
     for (TEUIProperty property in _allData) {
-      if (property.uiState == UIState.CHECKED_AND_IN_USE &&
-          property.propertyList != null) {
+      if (property.uiState == UIState.CHECKED_AND_IN_USE && property.propertyList != null) {
         return property.propertyList!;
       }
     }
