@@ -99,7 +99,7 @@ class ProducerUtils {
   ///
   /// @param uiProperty
   /// @return
-  static void completionResPath(TEUIProperty? uiProperty) async {
+  static Future<void> completionResPath(TEUIProperty? uiProperty) async {
     if (uiProperty == null) {
       return;
     }
@@ -137,10 +137,8 @@ class ProducerUtils {
           .startsWith(ResPathManager.JSON_RES_MARK_SEG)) {
         stringBuffer.write(await ResPathManager.getResManager().getSegDir());
       }else if (uiProperty.sdkParam!.resourcePath!.startsWith(ResPathManager.JSON_RES_MARK_LIGHT_MAKEUP)) {
-        debugPrint("completionResPath   ");
         stringBuffer.write(await ResPathManager.getResManager().getLightMakeupDir());
       }
-      debugPrint("completionResPath   2222");
       stringBuffer.write(_getFileName(uiProperty.sdkParam!.resourcePath!));
       uiProperty.sdkParam!.resourcePath = stringBuffer.toString();
     }

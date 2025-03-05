@@ -166,6 +166,9 @@ class TEffectName {
   // Forehead
   static const String BEAUTY_FACE_FOREHEAD = "basicV7.forehead";
 
+  // Forehead2
+  static const String BEAUTY_FACE_FOREHEAD2 = "basicV7.forehead2";
+
   // Wrinkle Removal
   static const String BEAUTY_FACE_REMOVE_WRINKLE = "beauty.removeWrinkle";
 

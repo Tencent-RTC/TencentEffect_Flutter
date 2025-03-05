@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tencent_effect_flutter/api/tencent_effect_api.dart';
 import 'package:tencent_effect_flutter/model/xmagic_property.dart';
 import 'package:tencent_effect_flutter/utils/Logs.dart';
+import 'package:tencent_effect_flutter_demo/config/beauty_param_manager.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_video_view.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud.dart';
 import 'package:tencent_trtc_cloud/tx_device_manager.dart';
@@ -19,6 +20,10 @@ import 'package:tencent_trtc_cloud/trtc_cloud_listener.dart';
 import '../../utils/GenerateTestUserSig.dart';
 import '../../utils/mettings_model.dart';
 import '../../utils/tool.dart';
+import '../config/te_res_config.dart';
+import '../model/te_ui_property.dart';
+import '../producer/te_general_data_producer.dart';
+import '../producer/te_panel_data_producer.dart';
 import '../utils/TEDeviceOrientation.dart';
 import '../view/beauty_panel_view.dart';
 import 'default_panel_view_callback.dart';
@@ -60,12 +65,14 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
   bool _isOpenBeauty = true;
   late TEDeviceOrientation _deviceOrientation;
 
-  final DefaultPanelViewCallBack beautyPanelViewCallBack =
-      DefaultPanelViewCallBack();
+  final DefaultPanelViewCallBack beautyPanelViewCallBack = DefaultPanelViewCallBack();
+
+  late TEPanelDataProducer panelDataProducer;
 
   @override
   initState() {
     super.initState();
+    _initBeautyParams();
     WidgetsBinding.instance.addObserver(this);
     meetModel = MeetingModel();
     meetModel.setUserSettig({
@@ -82,6 +89,17 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
     isOpenMic = userSetting["enabledMicrophone"];
     iniRoom();
     listenerOrientation();
+  }
+
+
+  Future<void> _initBeautyParams() async {
+    panelDataProducer = TEGeneralDataProducer();
+    panelDataProducer.setPanelDataList(TEResConfig.getConfig().defaultPanelDataList);
+    List<TESDKParam>? sdkParams = await BeautyParamManager.getBeautyParam();
+    if (sdkParams != null) {
+      panelDataProducer.setUsedParams(sdkParams);
+    }
+    panelDataProducer.setPanelDataList(TEResConfig.getConfig().defaultPanelDataList);
   }
 
   iniRoom() async {
@@ -181,9 +199,12 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
     //   _removeBeautyListener();
     // }
 
-     int? result = await trtcCloud.enableCustomVideoProcess(open);
-     beautyPanelViewCallBack.setEnableEffect(open);
-     return result;
+    if (!open) {
+      BeautyParamManager.saveBeautyParam(beautyPanelViewCallBack.getUsedParams());
+    }
+    int? result = await trtcCloud.enableCustomVideoProcess(open);
+    beautyPanelViewCallBack.setEnableEffect(open);
+    return result;
   }
 
   @override
@@ -521,7 +542,7 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
           direction: Axis.horizontal,
           children: [
             Expanded(
-              child: BeautyPanelView(beautyPanelViewCallBack, null,
+              child: BeautyPanelView(beautyPanelViewCallBack, panelDataProducer,
                   key: beautyPanelViewCallBack.globalKey),
             )
           ],
