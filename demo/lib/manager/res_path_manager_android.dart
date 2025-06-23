@@ -4,6 +4,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tencent_effect_flutter_demo/manager/res_path_manager.dart';
 
 class ResPathManagerAndroid implements ResPathManager {
+  String? _resPath;
+
   @override
   Future<String> getLutDir() async {
     return "${await getResPath()}${Platform.pathSeparator}light_material${Platform.pathSeparator}lut${Platform.pathSeparator}";
@@ -41,10 +43,11 @@ class ResPathManagerAndroid implements ResPathManager {
 
   @override
   Future<String> getResPath() async {
-    Directory directory = await getApplicationSupportDirectory();
-    return directory.path +
-        Platform.pathSeparator +
-        ResPathManager.TE_RES_DIR_NAME;
+    if (_resPath == null) {
+      Directory directory = await getApplicationSupportDirectory();
+      _resPath = directory.path + Platform.pathSeparator + ResPathManager.TE_RES_DIR_NAME;
+    }
+    return _resPath!;
   }
 
   @override

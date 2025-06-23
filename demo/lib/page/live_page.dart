@@ -12,6 +12,7 @@ import 'package:tencent_effect_flutter/api/tencent_effect_api.dart';
 import 'package:tencent_effect_flutter/utils/Logs.dart';
 import 'package:tencent_effect_flutter_demo/manager/res_path_manager.dart';
 import '../../languages/AppLocalizations.dart';
+import '../config/te_app_config.dart';
 import '../view/beauty_panel_view.dart';
 import 'default_panel_view_callback.dart';
 
@@ -171,6 +172,7 @@ class _LivePageState extends State<LivePage> with WidgetsBindingObserver {
   ///true is turn on,false is turn off
   Future<int?> enableBeauty(bool open) async {
     if (open) {
+      TencentEffectApi.getApi()!.setEffectMode(TeAppConfig.instance.effectMode);
       _setBeautyListener();
     } else {
       _removeBeautyListener();
