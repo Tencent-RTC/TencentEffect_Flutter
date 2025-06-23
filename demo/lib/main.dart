@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tencent_effect_flutter/api/tencent_effect_api.dart';
 import 'package:tencent_effect_flutter/utils/Logs.dart';
+import 'package:tencent_effect_flutter_demo/config/te_app_config.dart';
 import 'package:tencent_effect_flutter_demo/languages/app_localization_delegate.dart';
 import 'package:tencent_effect_flutter_demo/manager/res_path_manager.dart';
 import 'package:tencent_effect_flutter_demo/page/live_page.dart';
@@ -58,7 +59,7 @@ class HomePage extends StatefulWidget {
 class _HomeState extends State<HomePage> {
   static const String TAG = "_HomeState";
 
-  EffectMode effectMode = EffectMode.PRO;
+
 
   @override
   void initState() {
@@ -104,20 +105,20 @@ class _HomeState extends State<HomePage> {
                             value: EffectMode.NORMAL,
                             onChanged: (value) {
                               setState(() {
-                                effectMode = value! as EffectMode;
+                                TeAppConfig.instance.effectMode = value! as EffectMode;
                               });
                             },
-                            groupValue: effectMode,
+                            groupValue: TeAppConfig.instance.effectMode,
                           ),
                           const Text("Normal"),
                           Radio(
                             value: EffectMode.PRO,
                             onChanged: (value) {
                               setState(() {
-                                effectMode = value! as EffectMode;
+                                TeAppConfig.instance.effectMode = value! as EffectMode;
                               });
                             },
-                            groupValue: effectMode,
+                            groupValue: TeAppConfig.instance.effectMode,
                           ),
                           const Text("Pro"),
                         ],
@@ -155,7 +156,7 @@ class _HomeState extends State<HomePage> {
     }
   }
 
- 
+
 
   void _copyRes(InitXmagicCallBack callBack) {
     _showDialog(context);
@@ -222,7 +223,7 @@ class _HomeState extends State<HomePage> {
     ].request();
     if (statuses[Permission.camera] != PermissionStatus.denied &&
         statuses[Permission.microphone] != PermissionStatus.denied) {
-      TencentEffectApi.getApi()!.setEffectMode(effectMode);
+      TencentEffectApi.getApi()!.setEffectMode(TeAppConfig.instance.effectMode);
       Navigator.of(context).pushNamed(pageName);
     }
   }

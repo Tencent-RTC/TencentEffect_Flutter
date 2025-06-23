@@ -49,6 +49,11 @@ class TEParamManager {
       case TEffectName.BEAUTY_FACE_GODNESS:
       case TEffectName.BEAUTY_FACE_MALE_GOD:
         return TEffectName.BEAUTY_FACE_NATURE;
+      case TEffectName.BEAUTY_SMOOTH:
+      case TEffectName.BEAUTY_SMOOTH2:
+      case TEffectName.BEAUTY_SMOOTH3:
+      case TEffectName.BEAUTY_SMOOTH4:
+        return TEffectName.BEAUTY_SMOOTH;
       case TEffectName.EFFECT_MAKEUP:
       case TEffectName.EFFECT_MOTION:
       case TEffectName.EFFECT_SEGMENTATION:

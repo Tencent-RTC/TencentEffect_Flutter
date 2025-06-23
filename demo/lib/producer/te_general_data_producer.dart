@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 
@@ -22,6 +23,9 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
   bool pointMakeupChecked = false;
   bool lightMakeupChecked = false;
   List<TEUIProperty> pointMakeup = [];
+  bool _isInitializing = false;
+  Completer<List<TEUIProperty>>? _initializationCompleter;
+
 
   @override
   void setPanelDataList(List<TEPanelDataModel> panelDataList) {
@@ -38,8 +42,22 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
     if (_allData.isNotEmpty) {
       return _allData;
     }
-    _allData = await forceRefreshPanelData();
-    return _allData;
+    if (_isInitializing) {
+      return await _initializationCompleter!.future;
+    }
+    try {
+      _isInitializing = true;
+      _initializationCompleter = Completer<List<TEUIProperty>>();
+      _allData = await forceRefreshPanelData();
+      _initializationCompleter!.complete(_allData);
+      return _allData;
+    } catch (e) {
+      _initializationCompleter?.completeError(e);
+      rethrow;
+    } finally {
+      _isInitializing = false;
+      _initializationCompleter = null;
+    }
   }
 
   @override

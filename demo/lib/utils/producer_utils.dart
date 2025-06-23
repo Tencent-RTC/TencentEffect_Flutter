@@ -28,6 +28,13 @@ class ProducerUtils {
     TEffectName.BEAUTY_FACE_MALE_GOD,
   ];
 
+
+  static final List<String> BEAUTY_SMOOTH_NAMES = [
+    TEffectName.BEAUTY_SMOOTH,
+    TEffectName.BEAUTY_SMOOTH2,
+    TEffectName.BEAUTY_SMOOTH3,
+    TEffectName.BEAUTY_SMOOTH4,
+  ];
   
   ///
   /// @param teuiProperty
@@ -295,6 +302,10 @@ class ProducerUtils {
     }
     if (ProducerUtils.contains(BEAUTY_BLACK_EFFECT_NAMES, property.sdkParam!.effectName) &&
         ProducerUtils.contains(BEAUTY_BLACK_EFFECT_NAMES, property2.sdkParam!.effectName)) {
+      return true;
+    }
+    if (ProducerUtils.contains(BEAUTY_SMOOTH_NAMES, property.sdkParam!.effectName) &&
+        ProducerUtils.contains(BEAUTY_SMOOTH_NAMES, property2.sdkParam!.effectName)) {
       return true;
     }
     return false;

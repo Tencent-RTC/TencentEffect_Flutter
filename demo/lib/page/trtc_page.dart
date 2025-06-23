@@ -9,18 +9,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tencent_effect_flutter/api/tencent_effect_api.dart';
 import 'package:tencent_effect_flutter/model/xmagic_property.dart';
 import 'package:tencent_effect_flutter/utils/Logs.dart';
-import 'package:tencent_effect_flutter_demo/config/beauty_param_manager.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_video_view.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud.dart';
 import 'package:tencent_trtc_cloud/tx_device_manager.dart';
 import 'package:tencent_trtc_cloud/tx_audio_effect_manager.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
-import 'package:tencent_trtc_cloud/trtc_cloud_listener.dart';
-
-import '../../utils/GenerateTestUserSig.dart';
-import '../../utils/mettings_model.dart';
 import '../../utils/tool.dart';
+import '../config/te_app_config.dart';
 import '../config/te_res_config.dart';
+import '../manager/beauty_param_manager.dart';
 import '../model/te_ui_property.dart';
 import '../producer/te_general_data_producer.dart';
 import '../producer/te_panel_data_producer.dart';
@@ -39,13 +36,12 @@ class TRTCPage extends StatefulWidget {
 class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
   static const String TAG = "TrtcCameraPreviewPageState";
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  late MeetingModel meetModel;
 
   var userInfo = {}; //Multiplayer video user list
 
   bool isOpenMic = true; //whether turn on the microphone
   bool isOpenCamera = true; //whether turn on the video
-  bool isFrontCamera = true; //front camera
+  bool isFrontCamera = false; //front camera
   bool isDoubleTap = false;
   bool isShowingWindow = false;
   int? localViewId;
@@ -53,13 +49,10 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
   String doubleUserIdType = "";
 
   late TRTCCloud trtcCloud;
-  late TXDeviceManager txDeviceManager;
-  late TXAudioEffectManager txAudioManager;
 
   List userList = [];
   List userListLast = [];
   List screenUserList = [];
-  int? meetId;
   int quality = TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT;
 
   bool _isOpenBeauty = true;
@@ -74,19 +67,8 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
     super.initState();
     _initBeautyParams();
     WidgetsBinding.instance.addObserver(this);
-    meetModel = MeetingModel();
-    meetModel.setUserSettig({
-      "meetId": 1234,
-      "userId": "123456",
-      "enabledCamera": true,
-      "enabledMicrophone": false,
-      "quality": quality
-    });
-    var userSetting = meetModel.getUserSetting();
-    meetId = userSetting["meetId"];
-    userInfo['userId'] = userSetting["userId"];
-    isOpenCamera = userSetting["enabledCamera"];
-    isOpenMic = userSetting["enabledMicrophone"];
+
+    userInfo['userId'] = "userSetting";
     iniRoom();
     listenerOrientation();
   }
@@ -99,28 +81,14 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
     if (sdkParams != null) {
       panelDataProducer.setUsedParams(sdkParams);
     }
-    panelDataProducer.setPanelDataList(TEResConfig.getConfig().defaultPanelDataList);
   }
 
   iniRoom() async {
     // Create TRTCCloud singleton
     trtcCloud = (await TRTCCloud.sharedInstance())!;
-    // Tencent Cloud Audio Effect Management Module
-    txDeviceManager = trtcCloud.getDeviceManager();
-    // Tencent Cloud Audio Effect Management Module
-    txAudioManager = trtcCloud.getAudioEffectManager();
-    // Register event callback
-    trtcCloud.registerListener(onRtcListener);
-    // trtcCloud.setVideoEncoderParam(TRTCVideoEncParam(
-    //     videoResolution: TRTCCloudDef.TRTC_VIDEO_RESOLUTION_640_480,
-    //     videoResolutionMode: TRTCCloudDef.TRTC_VIDEO_RESOLUTION_MODE_PORTRAIT));
-
-    // Enter the room
-    enterRoom();
-
     initData();
-
     enableBeauty(_isOpenBeauty);
+
   }
 
   TEImageOrientation getTEImageOrientationByDeviceDirection(
@@ -193,14 +161,13 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
 
   ///true is turn on,false is turn off
   Future<int?> enableBeauty(bool open) async {
-    // if (open) {
-    //   _setBeautyListener();
-    // } else {
-    //   _removeBeautyListener();
-    // }
-
     if (!open) {
-      BeautyParamManager.saveBeautyParam(beautyPanelViewCallBack.getUsedParams());
+      BeautyParamManager.saveBeautyParam(
+          beautyPanelViewCallBack.getUsedParams());
+    } else {
+      TencentEffectApi.getApi()!.setEffectMode(TeAppConfig.instance.effectMode);
+      // enable gan skin retouch
+      TencentEffectApi.getApi()!.setFeatureEnableDisable("ai.skin.retouch.enable", true);
     }
     int? result = await trtcCloud.enableCustomVideoProcess(open);
     beautyPanelViewCallBack.setEnableEffect(open);
@@ -214,19 +181,6 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
         break;
       case AppLifecycleState
           .resumed: //Switch from the background to the foreground, and the interface is visible
-        if (!foundation.kIsWeb && Platform.isAndroid) {
-          userListLast = jsonDecode(jsonEncode(userList));
-          userList = [];
-          screenUserList = MeetingTool.getScreenList(userList);
-          setState(() {});
-
-          const timeout = Duration(milliseconds: 100); //10ms
-          Timer(timeout, () {
-            userList = userListLast;
-            screenUserList = MeetingTool.getScreenList(userList);
-            setState(() {});
-          });
-        }
         TencentEffectApi.getApi()?.onResume();
         break;
       case AppLifecycleState.paused: // Interface invisible, background
@@ -234,20 +188,12 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.detached:
         break;
+      case AppLifecycleState.hidden:
+        break;
     }
   }
 
-  // Enter the trtc room
-  enterRoom() async {
-    try {
-      userInfo['userSig'] =
-          await GenerateTestUserSig.genTestSig(userInfo['userId']);
-      meetModel.setUserInfo(userInfo);
-    } catch (err) {
-      userInfo['userSig'] = '';
-      TXLog.printlog(err.toString());
-    }
-  }
+
 
   initData() async {
     if (isOpenCamera) {
@@ -276,13 +222,11 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
     }
 
     screenUserList = MeetingTool.getScreenList(userList);
-    meetModel.setList(userList);
     setState(() {});
   }
 
   destroyRoom() {
-    trtcCloud.unRegisterListener(onRtcListener);
-    trtcCloud.exitRoom();
+    trtcCloud.stopLocalPreview();
     TRTCCloud.destroySharedInstance();
   }
 
@@ -294,114 +238,6 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  /// Event callbacks
-  onRtcListener(type, param) async {
-    if (type == TRTCCloudListener.onError) {
-      if (param['errCode'] == -1308) {
-        MeetingTool.toast('Failed to start screen recording', context);
-        await trtcCloud.stopScreenCapture();
-        userList[0]['visible'] = true;
-        isShowingWindow = false;
-        setState(() {});
-        trtcCloud.startLocalPreview(isFrontCamera, localViewId);
-      } else {
-        param['errMsg'];
-      }
-    }
-    if (type == TRTCCloudListener.onEnterRoom && param > 0) {
-      MeetingTool.toast('Enter room success', context);
-    }
-    if (type == TRTCCloudListener.onExitRoom && param > 0) {
-      MeetingTool.toast('Exit room success', context);
-    }
-    // Remote user entry
-    if (type == TRTCCloudListener.onRemoteUserEnterRoom) {
-      userList.add({
-        'userId': param,
-        'type': 'video',
-        'visible': false,
-        'size': {'width': 0, 'height': 0}
-      });
-      screenUserList = MeetingTool.getScreenList(userList);
-      setState(() {});
-      meetModel.setList(userList);
-    }
-    // Remote user leaves room
-    if (type == TRTCCloudListener.onRemoteUserLeaveRoom) {
-      String userId = param['userId'];
-      for (var i = 0; i < userList.length; i++) {
-        if (userList[i]['userId'] == userId) {
-          userList.removeAt(i);
-        }
-      }
-      //The user who is amplifying the video exit room
-      if (doubleUserId == userId) {
-        isDoubleTap = false;
-      }
-      screenUserList = MeetingTool.getScreenList(userList);
-      setState(() {});
-      meetModel.setList(userList);
-    }
-    _onRtcListener(type, param);
-  }
-
-  _onRtcListener(type, param) async {
-    if (type == TRTCCloudListener.onUserVideoAvailable) {
-      String userId = param['userId'];
-
-      if (param['available']) {
-        for (var i = 0; i < userList.length; i++) {
-          if (userList[i]['userId'] == userId &&
-              userList[i]['type'] == 'video') {
-            userList[i]['visible'] = true;
-          }
-        }
-      } else {
-        for (var i = 0; i < userList.length; i++) {
-          if (userList[i]['userId'] == userId &&
-              userList[i]['type'] == 'video') {
-            if (isDoubleTap &&
-                doubleUserId == userList[i]['userId'] &&
-                doubleUserIdType == userList[i]['type']) {}
-            trtcCloud.stopRemoteView(
-                userId, TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG);
-            userList[i]['visible'] = false;
-          }
-        }
-      }
-
-      screenUserList = MeetingTool.getScreenList(userList);
-      setState(() {});
-      meetModel.setList(userList);
-    }
-
-    if (type == TRTCCloudListener.onUserSubStreamAvailable) {
-      String userId = param["userId"];
-      if (param["available"]) {
-        userList.add({
-          'userId': userId,
-          'type': 'subStream',
-          'visible': true,
-          'size': {'width': 0, 'height': 0}
-        });
-      } else {
-        for (var i = 0; i < userList.length; i++) {
-          if (userList[i]['userId'] == userId &&
-              userList[i]['type'] == 'subStream') {
-            if (isDoubleTap &&
-                doubleUserId == userList[i]['userId'] &&
-                doubleUserIdType == userList[i]['type']) {}
-            trtcCloud.stopRemoteView(
-                userId, TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB);
-            userList.removeAt(i);
-          }
-        }
-      }
-      screenUserList = MeetingTool.getScreenList(userList);
-      setState(() {});
-      meetModel.setList(userList);
-    }
-  }
 
   Future<bool?> showErrorDialog(errorMsg) {
     return showDialog<bool>(
@@ -473,12 +309,13 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
 
   Widget topSetting() {
     return Align(
+        alignment: Alignment.topCenter,
         child: Container(
+          height: 50.0,
+          color: const Color.fromRGBO(200, 200, 200, 0.4),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Text(meetId.toString(),
-                  style: const TextStyle(fontSize: 20, color: Colors.white)),
               TextButton(
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.blue)),
@@ -516,10 +353,7 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
               ),
             ],
           ),
-          height: 50.0,
-          color: const Color.fromRGBO(200, 200, 200, 0.4),
-        ),
-        alignment: Alignment.topCenter);
+        ));
   }
 
   _getProperties(List<XmagicProperty> resultList,
@@ -538,6 +372,7 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
 
   Widget buildPanelView() {
     return Align(
+        alignment: Alignment.bottomCenter,
         child: Flex(
           direction: Axis.horizontal,
           children: [
@@ -546,8 +381,7 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
                   key: beautyPanelViewCallBack.globalKey),
             )
           ],
-        ),
-        alignment: Alignment.bottomCenter);
+        ));
   }
 
   @override

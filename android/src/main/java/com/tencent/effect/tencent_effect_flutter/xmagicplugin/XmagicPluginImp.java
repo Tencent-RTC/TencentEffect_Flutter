@@ -162,8 +162,10 @@ public class XmagicPluginImp implements XmagicPlugin {
             String path = (String) call.arguments;
             LogUtils.d(TAG, "setLibPathAndLoad method parameter is " + path);
             if (!TextUtils.isEmpty(path)) {
-                boolean loadResult = XmagicApiManager.setLibPathAndLoad(path);
-                result.success(loadResult);
+                new Thread(() -> {
+                    boolean loadResult = XmagicApiManager.setLibPathAndLoad(path);
+                    handler.post(() -> result.success(loadResult));  // 确保在主线程回调结果
+                }).start();
                 return;
             }
         }
