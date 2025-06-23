@@ -41,7 +41,7 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
 
   bool isOpenMic = true; //whether turn on the microphone
   bool isOpenCamera = true; //whether turn on the video
-  bool isFrontCamera = false; //front camera
+  bool isFrontCamera = true; //front camera
   bool isDoubleTap = false;
   bool isShowingWindow = false;
   int? localViewId;
