@@ -66,7 +66,7 @@ android {
         compileOnly fileTree(dir: "libs", include: ['*.aar'])
 //        compileOnly files("$flutterRoot/bin/cache/artifacts/engine/android-arm/flutter.jar")
         compileOnly 'androidx.annotation:annotation:1.1.0'
-        compileOnly 'com.tencent.mediacloud:TencentEffect_S1-07:3.9.1.3'
+        compileOnly 'com.tencent.mediacloud:TencentEffect_S1-07:4.1.0.6'
     }
 
 
