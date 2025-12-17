@@ -244,9 +244,12 @@ class PanelViewState extends State<BeautyPanelView> {
       return Container(
         width: 45,
         height: 45,
+        padding: EdgeInsets.all(1),
         decoration: _currentList?[index].uiState == UIState.CHECKED_AND_IN_USE
-            ? BoxDecoration(border: Border.all(width: 2, color: Colors.blue.shade500), borderRadius: BorderRadius.circular(10))
-            : null,
+            ? BoxDecoration(border: Border.all(width: 1, color: Colors.blue
+            .shade500), borderRadius: BorderRadius.circular(8))
+            : BoxDecoration(border: Border.all(width: 1, color: Colors.transparent
+            ), borderRadius: BorderRadius.circular(8)),
         child: Image.asset(
           "assets/${_currentList?[index].icon}",
           width: 45,

@@ -282,6 +282,7 @@ static XmagicApiManager *shareSingleton = nil;
         }
         [_saveEffectList removeAllObjects];
     }
+    NSLog(@"buildBeautySDK ,  xMagicApi create success");
 }
 
 

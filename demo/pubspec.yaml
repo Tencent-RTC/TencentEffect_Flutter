@@ -33,9 +33,9 @@ dependencies:
 
 
   tencent_effect_flutter:
-    path: ../TencentEffect_Flutter
+    path: ..
 #  tencent_effect_flutter_kit:
-#    path: ../TencentEffect_Flutter_kit
+#    path: .._kit
   live_flutter_plugin: 12.5.0
   tencent_trtc_cloud: 3.0.3
   cupertino_icons: ^1.0.2
@@ -70,7 +70,9 @@ flutter:
   assets:
     - assets/beauty_panel/
     - assets/beauty_panel/panel_icon/beauty/
+    - assets/beauty_panel/panel_icon/beauty/beauty_smooth/
     - assets/beauty_panel/panel_icon/beauty/eyes_makeup/
+    - assets/beauty_panel/panel_icon/beauty/kouhong/
     - assets/beauty_panel/panel_icon/beauty/liti/
     - assets/beauty_panel/panel_icon/beauty/saihong/
     - assets/beauty_panel/panel_icon/beauty_body/
