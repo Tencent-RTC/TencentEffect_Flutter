@@ -55,7 +55,7 @@
         {
             "displayName":"胸部调整",
             "displayNameEn":"BreastAdjust",
-            "icon":"beauty_panel/panel_icon/beauty_body/beauty_chest.png",
+            "icon":"beauty_panel/panel_icon/beauty_body/body_beauty_chest.png",
             "sdkParam":{
                 "effectName":"body.enlargeChestStrength",
                 "effectValue":0

@@ -84,9 +84,9 @@
             "uiState":1,
             "propertyList":[
                 {
-                    "displayName":"磨皮1",
-                    "displayNameEn":"Smooth Skin1",
-                    "icon":"beauty_panel/panel_icon/beauty/beauty_smooth.png",
+                    "displayName":"幼龄",
+                    "displayNameEn":"Young",
+                    "icon":"beauty_panel/panel_icon/beauty/beauty_smooth/beauty_smooth_1.png",
                     "uiState":1,
                     "sdkParam":{
                         "effectName":"smooth.smooth",
@@ -94,27 +94,27 @@
                     }
                 },
                 {
-                    "displayName":"磨皮2",
-                    "displayNameEn":"Smooth Skin2",
-                    "icon":"beauty_panel/panel_icon/beauty/beauty_smooth.png",
+                    "displayName":"质感",
+                    "displayNameEn":"Texture",
+                    "icon":"beauty_panel/panel_icon/beauty/beauty_smooth/beauty_smooth_2.png",
                     "sdkParam":{
                         "effectName":"smooth.smooth2",
                         "effectValue":40
                     }
                 },
                 {
-                    "displayName":"磨皮3",
-                    "displayNameEn":"Smooth Skin3",
-                    "icon":"beauty_panel/panel_icon/beauty/beauty_smooth.png",
+                    "displayName":"真实",
+                    "displayNameEn":"Realistic",
+                    "icon":"beauty_panel/panel_icon/beauty/beauty_smooth/beauty_smooth_3.png",
                     "sdkParam":{
                         "effectName":"smooth.smooth3",
                         "effectValue":40
                     }
                 },
                 {
-                    "displayName":"磨皮4",
-                    "displayNameEn":"Smooth Skin4",
-                    "icon":"beauty_panel/panel_icon/beauty/beauty_smooth.png",
+                    "displayName":"经典",
+                    "displayNameEn":"Classic",
+                    "icon":"beauty_panel/panel_icon/beauty/beauty_smooth/beauty_smooth_4.png",
                     "sdkParam":{
                         "effectName":"smooth.smooth4",
                         "effectValue":40
@@ -123,12 +123,21 @@
             ]
         },
         {
-            "displayName":"GAN 美肌",
-            "displayNameEn":"GAN Beauty Skin",
+            "displayName":"AI 美肌",
+            "displayNameEn":"AI Beauty Skin",
             "icon":"beauty_panel/panel_icon/beauty/beauty_smooth_gan.png",
             "sdkParam":{
                 "effectName":"beauty.skinRetouch",
                 "effectValue":40
+            }
+        },
+        {
+            "displayName":"皮肤高光",
+            "displayNameEn":"Skin Highlight",
+            "icon":"beauty_panel/panel_icon/beauty/beauty_skin_highlight.png",
+            "sdkParam":{
+                "effectName":"beauty.skinHighlight",
+                "effectValue":0
             }
         },
         {
@@ -632,8 +641,8 @@
                 },
                 {
                     "displayName":"复古红",
-                    "displayNameEn":"Retrored",
-                    "icon":"beauty_panel/panel_icon/beauty/beauty_lips.png",
+                    "displayNameEn":"Vintage Red",
+                    "icon":"beauty_panel/panel_icon/beauty/kouhong/fuguhong.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureLipsLut",
                         "effectValue":50,
@@ -643,7 +652,7 @@
                 {
                     "displayName":"蜜桃色",
                     "displayNameEn":"Peachy",
-                    "icon":"beauty_panel/panel_icon/beauty/beauty_lips.png",
+                    "icon":"beauty_panel/panel_icon/beauty/kouhong/mitaose.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureLipsLut",
                         "effectValue":50,
@@ -653,7 +662,7 @@
                 {
                     "displayName":"珊瑚橘",
                     "displayNameEn":"Coral",
-                    "icon":"beauty_panel/panel_icon/beauty/beauty_lips.png",
+                    "icon":"beauty_panel/panel_icon/beauty/kouhong/shanhuju.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureLipsLut",
                         "effectValue":50,
@@ -663,7 +672,7 @@
                 {
                     "displayName":"温柔粉",
                     "displayNameEn":"Pink",
-                    "icon":"beauty_panel/panel_icon/beauty/beauty_lips.png",
+                    "icon":"beauty_panel/panel_icon/beauty/kouhong/wenrufen.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureLipsLut",
                         "effectValue":50,
@@ -673,7 +682,7 @@
                 {
                     "displayName":"活力橙",
                     "displayNameEn":"Orange",
-                    "icon":"beauty_panel/panel_icon/beauty/beauty_lips.png",
+                    "icon":"beauty_panel/panel_icon/beauty/kouhong/huolicheng.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureLipsLut",
                         "effectValue":50,
@@ -768,7 +777,7 @@
                 },
                 {
                     "displayName":"橘调",
-                    "displayNameEn":"Orangetone",
+                    "displayNameEn":"Orange Tone",
                     "icon":"beauty_panel/panel_icon/beauty/saihong/saihong_judiao.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureRedCheek",
@@ -833,8 +842,8 @@
                     }
                 },
                 {
-                    "displayName":"red",
-                    "displayNameEn":"red",
+                    "displayName":"红色",
+                    "displayNameEn":"Red",
                     "icon":"beauty_panel/panel_icon/beauty/hair_color_red.png",
                     "sdkParam":{
                         "effectName":"beauty.hairColorLut",
@@ -843,8 +852,8 @@
                     }
                 },
                 {
-                    "displayName":"purple",
-                    "displayNameEn":"purple",
+                    "displayName":"紫色",
+                    "displayNameEn":"Purple",
                     "icon":"beauty_panel/panel_icon/beauty/hair_color_purple.png",
                     "sdkParam":{
                         "effectName":"beauty.hairColorLut",
@@ -853,8 +862,8 @@
                     }
                 },
                 {
-                    "displayName":"blue",
-                    "displayNameEn":"blue",
+                    "displayName":"蓝色",
+                    "displayNameEn":"Blue",
                     "icon":"beauty_panel/panel_icon/beauty/hair_color_blue.png",
                     "sdkParam":{
                         "effectName":"beauty.hairColorLut",
@@ -863,8 +872,8 @@
                     }
                 },
                 {
-                    "displayName":"yellow",
-                    "displayNameEn":"yellow",
+                    "displayName":"黄色",
+                    "displayNameEn":"Yellow",
                     "icon":"beauty_panel/panel_icon/beauty/hair_color_yellow.png",
                     "sdkParam":{
                         "effectName":"beauty.hairColorLut",
@@ -873,8 +882,8 @@
                     }
                 },
                 {
-                    "displayName":"gray",
-                    "displayNameEn":"gray",
+                    "displayName":"灰色",
+                    "displayNameEn":"Gray",
                     "icon":"beauty_panel/panel_icon/beauty/hair_color_gray.png",
                     "sdkParam":{
                         "effectName":"beauty.hairColorLut",
@@ -883,8 +892,8 @@
                     }
                 },
                 {
-                    "displayName":"green",
-                    "displayNameEn":"green",
+                    "displayName":"绿色",
+                    "displayNameEn":"Green",
                     "icon":"beauty_panel/panel_icon/beauty/hair_color_green.png",
                     "sdkParam":{
                         "effectName":"beauty.hairColorLut",
@@ -909,8 +918,8 @@
                     }
                 },
                 {
-                    "displayName":"0-albatross",
-                    "displayNameEn":"0-albatross",
+                    "displayName":"裸色",
+                    "displayNameEn":"Nude color",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_0-albatross.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -919,8 +928,8 @@
                     }
                 },
                 {
-                    "displayName":"1-falcon",
-                    "displayNameEn":"1-falcon",
+                    "displayName":"C位",
+                    "displayNameEn":"C position",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_1-falcon.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -929,8 +938,8 @@
                     }
                 },
                 {
-                    "displayName":"2-flamingo",
-                    "displayNameEn":"2-flamingo",
+                    "displayName":"日常",
+                    "displayNameEn":"Daily",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_2-flamingo.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -939,8 +948,8 @@
                     }
                 },
                 {
-                    "displayName":"3-hawk",
-                    "displayNameEn":"3-hawk",
+                    "displayName":"橘棕",
+                    "displayNameEn":"Orange Brown",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_3-hawk.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -949,8 +958,8 @@
                     }
                 },
                 {
-                    "displayName":"4-kingfisher",
-                    "displayNameEn":"4-kingfisher",
+                    "displayName":"哭包",
+                    "displayNameEn":"Crying",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_4-kingfisher.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -959,8 +968,8 @@
                     }
                 },
                 {
-                    "displayName":"5-owl",
-                    "displayNameEn":"5-owl",
+                    "displayName":"扩眼",
+                    "displayNameEn":"Eye-widening",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_5-owl.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -969,8 +978,8 @@
                     }
                 },
                 {
-                    "displayName":"6-parrot",
-                    "displayNameEn":"6-parrot",
+                    "displayName":"钓系",
+                    "displayNameEn":"Fishing series",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_6-parrot.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -979,8 +988,8 @@
                     }
                 },
                 {
-                    "displayName":"7-peacock",
-                    "displayNameEn":"7-peacock",
+                    "displayName":"莫兰迪",
+                    "displayNameEn":"Morandi",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_7-peacock.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -989,8 +998,8 @@
                     }
                 },
                 {
-                    "displayName":"8-robin",
-                    "displayNameEn":"8-robin",
+                    "displayName":"温柔",
+                    "displayNameEn":"Tenderness",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_8-robin.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -999,8 +1008,8 @@
                     }
                 },
                 {
-                    "displayName":"9-swan",
-                    "displayNameEn":"9-swan",
+                    "displayName":"浅粉",
+                    "displayNameEn":"Light pink",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_9-swan.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -1009,8 +1018,8 @@
                     }
                 },
                 {
-                    "displayName":"10-grapes",
-                    "displayNameEn":"10-grapes",
+                    "displayName":"紫韵",
+                    "displayNameEn":"Purple",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_10-grapes.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -1019,8 +1028,8 @@
                     }
                 },
                 {
-                    "displayName":"11-blossom",
-                    "displayNameEn":"11-blossom",
+                    "displayName":"绽放",
+                    "displayNameEn":"Blossom",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_11-blossom.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -1029,8 +1038,8 @@
                     }
                 },
                 {
-                    "displayName":"12-raised",
-                    "displayNameEn":"12-raised",
+                    "displayName":"日初",
+                    "displayNameEn":"Sunrise",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_12-raised.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -1039,8 +1048,8 @@
                     }
                 },
                 {
-                    "displayName":"13-sunset",
-                    "displayNameEn":"13-sunset",
+                    "displayName":"日落",
+                    "displayNameEn":"Sunset",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_13-sunset.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -1049,8 +1058,8 @@
                     }
                 },
                 {
-                    "displayName":"14-smudging",
-                    "displayNameEn":"14-smudging",
+                    "displayName":"烟熏",
+                    "displayNameEn":"Smudging",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_14-smudging.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -1059,8 +1068,8 @@
                     }
                 },
                 {
-                    "displayName":"15-tipsy",
-                    "displayNameEn":"15-tipsy",
+                    "displayName":"醉意",
+                    "displayNameEn":"Tipsy",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_shadow_15-tipsy.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeShadow",
@@ -1072,7 +1081,7 @@
         },
         {
             "displayName":"眼线",
-            "displayNameEn":"EyeLiner",
+            "displayNameEn":"Eyeliner",
             "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eye_liner.png",
             "propertyList":[
                 {
@@ -1085,8 +1094,8 @@
                     }
                 },
                 {
-                    "displayName":"0",
-                    "displayNameEn":"0",
+                    "displayName":"御姐",
+                    "displayNameEn":"Queen",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_liner_0.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeLiner",
@@ -1095,8 +1104,8 @@
                     }
                 },
                 {
-                    "displayName":"1",
-                    "displayNameEn":"1",
+                    "displayName":"猫眼",
+                    "displayNameEn":"Cat Eyes",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_liner_1.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeLiner",
@@ -1105,8 +1114,8 @@
                     }
                 },
                 {
-                    "displayName":"2",
-                    "displayNameEn":"2",
+                    "displayName":"狗狗眼",
+                    "displayNameEn":"Dog Eyes",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eye_liner_2.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeLiner",
@@ -1131,8 +1140,8 @@
                     }
                 },
                 {
-                    "displayName":"0",
-                    "displayNameEn":"0",
+                    "displayName":"甜心",
+                    "displayNameEn":"Sweetheart",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyelash_0.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyelash",
@@ -1141,8 +1150,8 @@
                     }
                 },
                 {
-                    "displayName":"1",
-                    "displayNameEn":"1",
+                    "displayName":"无辜眼",
+                    "displayNameEn":"Innocent",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyelash_1.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyelash",
@@ -1151,8 +1160,8 @@
                     }
                 },
                 {
-                    "displayName":"2",
-                    "displayNameEn":"2",
+                    "displayName":"下睫毛",
+                    "displayNameEn":"Lower Eyelashes",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyelash_2.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyelash",
@@ -1161,8 +1170,8 @@
                     }
                 },
                 {
-                    "displayName":"3",
-                    "displayNameEn":"3",
+                    "displayName":"自然",
+                    "displayNameEn":"Natural",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyelash_3.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyelash",
@@ -1171,8 +1180,8 @@
                     }
                 },
                 {
-                    "displayName":"4",
-                    "displayNameEn":"4",
+                    "displayName":"异域",
+                    "displayNameEn":"Exotic",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyelash_4.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyelash",
@@ -1181,8 +1190,8 @@
                     }
                 },
                 {
-                    "displayName":"5",
-                    "displayNameEn":"5",
+                    "displayName":"纯欲",
+                    "displayNameEn":"Pure desire",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyelash_5.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyelash",
@@ -1191,8 +1200,8 @@
                     }
                 },
                 {
-                    "displayName":"6",
-                    "displayNameEn":"6",
+                    "displayName":"二次元",
+                    "displayNameEn":"Second Dimension",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyelash_6.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyelash",
@@ -1201,8 +1210,8 @@
                     }
                 },
                 {
-                    "displayName":"7",
-                    "displayNameEn":"7",
+                    "displayName":"倒置",
+                    "displayNameEn":"Inverted",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyelash_7.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyelash",
@@ -1211,8 +1220,8 @@
                     }
                 },
                 {
-                    "displayName":"8",
-                    "displayNameEn":"8",
+                    "displayName":"婴儿弯",
+                    "displayNameEn":"Baby Bend",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyelash_8.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyelash",
@@ -1221,8 +1230,8 @@
                     }
                 },
                 {
-                    "displayName":"9",
-                    "displayNameEn":"9",
+                    "displayName":"毛绒",
+                    "displayNameEn":"Fluffy",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyelash_9.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyelash",
@@ -1231,8 +1240,8 @@
                     }
                 },
                 {
-                    "displayName":"10",
-                    "displayNameEn":"10",
+                    "displayName":"狐系",
+                    "displayNameEn":"Fox",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyelash_10.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyelash",
@@ -1290,7 +1299,7 @@
         },
         {
             "displayName":"卧蚕",
-            "displayNameEn":"Eyewocan",
+            "displayNameEn":"Lower Eyelids",
             "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/wocan.png",
             "propertyList":[
                 {
@@ -1359,8 +1368,8 @@
                     }
                 },
                 {
-                    "displayName":"0",
-                    "displayNameEn":"0",
+                    "displayName":"琥珀流",
+                    "displayNameEn":"Amber Flow",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyeball_0.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeball",
@@ -1369,8 +1378,8 @@
                     }
                 },
                 {
-                    "displayName":"1",
-                    "displayNameEn":"1",
+                    "displayName":"树影棕",
+                    "displayNameEn":"Tree Shadow Brown",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyeball_1.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeball",
@@ -1379,8 +1388,8 @@
                     }
                 },
                 {
-                    "displayName":"2",
-                    "displayNameEn":"2",
+                    "displayName":"焦糖奶咖",
+                    "displayNameEn":"Caramel Milk Coffee",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyeball_2.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeball",
@@ -1389,8 +1398,8 @@
                     }
                 },
                 {
-                    "displayName":"3",
-                    "displayNameEn":"3",
+                    "displayName":"榛子脆",
+                    "displayNameEn":"Hazelnut Crisp",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyeball_3.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeball",
@@ -1399,8 +1408,8 @@
                     }
                 },
                 {
-                    "displayName":"4",
-                    "displayNameEn":"4",
+                    "displayName":"暮色漫",
+                    "displayNameEn":"Twilight Manga",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyeball_4.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeball",
@@ -1409,8 +1418,8 @@
                     }
                 },
                 {
-                    "displayName":"5",
-                    "displayNameEn":"5",
+                    "displayName":"蓝宝石",
+                    "displayNameEn":"Sapphire",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyeball_5.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeball",
@@ -1419,8 +1428,8 @@
                     }
                 },
                 {
-                    "displayName":"6",
-                    "displayNameEn":"6",
+                    "displayName":"可可碎冰",
+                    "displayNameEn":"Cocoa Crushed Ice",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyeball_6.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeball",
@@ -1429,8 +1438,8 @@
                     }
                 },
                 {
-                    "displayName":"7",
-                    "displayNameEn":"7",
+                    "displayName":"灰瞳",
+                    "displayNameEn":"Gray",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyeball_7.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeball",
@@ -1439,8 +1448,8 @@
                     }
                 },
                 {
-                    "displayName":"8",
-                    "displayNameEn":"8",
+                    "displayName":"棕糖雾",
+                    "displayNameEn":"Brown Sugar Mist",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyeball_8.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeball",
@@ -1449,8 +1458,8 @@
                     }
                 },
                 {
-                    "displayName":"9",
-                    "displayNameEn":"9",
+                    "displayName":"栗木浅棕",
+                    "displayNameEn":"Chestnut Light Brown",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyeball_9.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyeball",
@@ -1475,8 +1484,8 @@
                     }
                 },
                 {
-                    "displayName":"0",
-                    "displayNameEn":"0",
+                    "displayName":"素眉",
+                    "displayNameEn":"Plain",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyebrow_0.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyebrow",
@@ -1485,8 +1494,8 @@
                     }
                 },
                 {
-                    "displayName":"1",
-                    "displayNameEn":"1",
+                    "displayName":"粗平眉",
+                    "displayNameEn":"Thick flat",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyebrow_1.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyebrow",
@@ -1495,8 +1504,8 @@
                     }
                 },
                 {
-                    "displayName":"2",
-                    "displayNameEn":"2",
+                    "displayName":"落尾眉",
+                    "displayNameEn":"Falling",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyebrow_2.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyebrow",
@@ -1505,8 +1514,8 @@
                     }
                 },
                 {
-                    "displayName":"3",
-                    "displayNameEn":"3",
+                    "displayName":"远山眉",
+                    "displayNameEn":"Distant mountain",
                     "icon":"beauty_panel/panel_icon/beauty/eyes_makeup/eyes_makeup_eyebrow_3.png",
                     "sdkParam":{
                         "effectName":"beauty.faceFeatureEyesMakeup.eyebrow",

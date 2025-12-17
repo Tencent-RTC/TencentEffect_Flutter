@@ -162,12 +162,14 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
   ///true is turn on,false is turn off
   Future<int?> enableBeauty(bool open) async {
     if (!open) {
-      BeautyParamManager.saveBeautyParam(
-          beautyPanelViewCallBack.getUsedParams());
+      //获取当前设置的美颜属性
+      //Get the currently set beauty parameters
+      List<TESDKParam> lastSdkParam = beautyPanelViewCallBack.getUsedParams();
+      //将美颜属性保存在本地磁盘，下次进入的时候设置给面板
+      //Save beauty parameters to local disk and set them to the panel next time you enter
+      BeautyParamManager.saveBeautyParam(lastSdkParam);
     } else {
       TencentEffectApi.getApi()!.setEffectMode(TeAppConfig.instance.effectMode);
-      // enable gan skin retouch
-      TencentEffectApi.getApi()!.setFeatureEnableDisable("ai.skin.retouch.enable", true);
     }
     int? result = await trtcCloud.enableCustomVideoProcess(open);
     beautyPanelViewCallBack.setEnableEffect(open);
