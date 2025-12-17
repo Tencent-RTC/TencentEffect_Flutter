@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'tencent_effect_flutter'
-  s.version          = '3.9.3.2'
+  s.version          = '4.1.0.7'
   s.summary          = 'A new Flutter project.'
   s.description      = <<-DESC
 A new Flutter project.
@@ -17,7 +17,7 @@ A new Flutter project.
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
 #  s.dependency 'XMagic'
-  s.dependency 'TencentEffect_S1-07', '3.9.3.2'
+  s.dependency 'TencentEffect_S1-07', '4.1.0.7'
   s.dependency 'TXCustomBeautyProcesserPlugin','1.0.2'
   s.platform = :ios, '9.0'
   s.static_framework = true

@@ -16,8 +16,8 @@ import 'config/te_res_config.dart';
 import 'languages/AppLocalizations.dart';
 
 const String licenseUrl =
-    "Please replace it with your license URL.";
-const String licenseKey = "Please replace it with your license key";
+    "please set your license url";
+const String licenseKey = "please set your license key";
 
 void main() {
   runApp(const MyApp());
@@ -76,17 +76,33 @@ class _HomeState extends State<HomePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          TextButton(
+          MaterialButton(
               onPressed: () => {_onClickLive(context)},
+              color: Colors.blue,
+              textColor: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 4,
               child: const Text('Live',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ))),
-          TextButton(
+          MaterialButton(
               onPressed: () => {_onClickTRTC(context)},
+              color: Colors.blue,
+              textColor: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 4,
               child: const Text('TRTC',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ))),
           Padding(
             padding: const EdgeInsets.all(16.0),
