@@ -45,8 +45,16 @@ abstract class TEDefaultPanelViewCallBack implements TEBeautyPanelViewCallBack {
   @override
   void onUpdateEffect(TESDKParam sdkParam) {
     if (sdkParam.effectName != null) {
-      paramManager.putTEParam(sdkParam);
-      _applyEffect(sdkParam);
+      // For template data, apply first then store (matching Android behavior).
+      // This ensures _applyEffect can still read the old template params
+      // before they get overwritten by the new sdkParam.
+      if (TESDKParam.BEAUTY_TEMPLATE_EFFECT_NAME == sdkParam.effectName) {
+        _applyEffect(sdkParam);
+        paramManager.putTEParam(sdkParam);
+      } else {
+        paramManager.putTEParam(sdkParam);
+        _applyEffect(sdkParam);
+      }
     }
   }
 

@@ -211,13 +211,13 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
 
   void _indexProperty(TEUIProperty property) {
     if (property.uiCategory == UICategory.BEAUTY_TEMPLATE) {
-      if (_originalParamList != null) {
+      if (_originalParamList != null && _originalParamList!.isNotEmpty) {
         property.setUiState(UIState.INIT);
-        if (property.paramList != null) {
-          String? uiIndex = _getNameMapKeyFromProperty(property);
-          if (uiIndex != null && uiIndex.isNotEmpty) {
-            _uiPropertyIndexByNameMap[uiIndex] = property;
-          }
+      }
+      if (property.paramList != null) {
+        String? uiIndex = _getNameMapKeyFromProperty(property);
+        if (uiIndex != null && uiIndex.isNotEmpty) {
+          _uiPropertyIndexByNameMap[uiIndex] = property;
         }
       }
     } else {
@@ -522,6 +522,12 @@ class TEGeneralDataProducer implements TEPanelDataProducer {
       if (property.uiState == UIState.CHECKED_AND_IN_USE && property.propertyList != null) {
         return property.propertyList!;
       }
+    }
+    // No tab has CHECKED_AND_IN_USE state, fallback to selecting the first tab
+    // (matches Android TEBeautyTabLayout behavior: "没有默认选中项，手动选中第0项")
+    if (_allData.isNotEmpty) {
+      _allData[0].setUiState(UIState.CHECKED_AND_IN_USE);
+      return _allData[0].propertyList;
     }
     return null;
   }
