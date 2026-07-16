@@ -55,6 +55,7 @@ class TEParamManager {
       case TEffectName.BEAUTY_SMOOTH2:
       case TEffectName.BEAUTY_SMOOTH3:
       case TEffectName.BEAUTY_SMOOTH4:
+      case TEffectName.BEAUTY_SMOOTH5:
         return TEffectName.BEAUTY_SMOOTH;
       case TEffectName.EFFECT_MAKEUP:
       case TEffectName.EFFECT_MOTION:

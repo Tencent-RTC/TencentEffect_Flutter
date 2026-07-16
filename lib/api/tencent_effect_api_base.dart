@@ -351,4 +351,10 @@ abstract class TencentEffectApiBase extends TencentEffectApi {
   void setBeautyProcessPaused(bool paused) {
     channel.invokeMethod("setBeautyProcessPaused", {"beautyProcessPaused": paused});
   }
+
+
+  @override
+  void setOutputTextureKeepRatio(double ratio){
+    channel.invokeMethod("setOutputTextureKeepRatio", ratio);
+  }
 }

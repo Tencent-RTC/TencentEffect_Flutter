@@ -11,10 +11,11 @@ class APPLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
   // 2.
   @override
   bool isSupported(Locale locale) {
-    return [
-      "en",
-      "zh",
-    ].contains(locale.languageCode);
+    // 支持 en、zh（简体）、zh_TW/zh_HK/zh_Hant（繁体）
+    if (["en", "zh"].contains(locale.languageCode)) {
+      return true;
+    }
+    return false;
   }
 
   // 3

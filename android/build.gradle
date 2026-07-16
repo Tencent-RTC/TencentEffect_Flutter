@@ -108,7 +108,7 @@ android {
 //        compileOnly files("$flutterRoot/bin/cache/artifacts/engine/android-arm/flutter.jar")
         compileOnly 'androidx.annotation:annotation:1.1.0'
 
-        implementation "com.tencent.mediacloud:TencentEffect_${subSpecVersion}:4.2.0.11"
+        implementation "com.tencent.mediacloud:TencentEffect_${subSpecVersion}:4.3.0.22"
     }
 
 

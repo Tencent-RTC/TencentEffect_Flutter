@@ -1,6 +1,6 @@
 name: tencent_effect_flutter
 description: "Tencent Effect Flutter plugin project."
-version: 4.2.0-14
+version: 4.3.0-15
 homepage: https://cloud.tencent.com/document/product/616/81197
 
 environment:
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^1.2.0        # HTTP请求
+  http: ^1.6.0        # HTTP请求
   archive: ^4.0.1      # ZIP解压
   shared_preferences: ^2.5.3
   path_provider: ^2.0.1

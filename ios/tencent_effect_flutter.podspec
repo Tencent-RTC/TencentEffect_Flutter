@@ -50,7 +50,7 @@ puts "-----------------------------------------------"
 
 Pod::Spec.new do |s|
   s.name             = 'tencent_effect_flutter'
-  s.version          = '4.2.0'
+  s.version          = '4.3.0'
   s.summary          = 'A new Flutter project.'
   s.description      = <<-DESC
 A new Flutter project.
@@ -68,7 +68,7 @@ A new Flutter project.
   # 根据 ALLOWED_VERSIONS 自动生成所有 subspec
   ALLOWED_VERSIONS.each do |ver|
     s.subspec ver do |ss|
-      ss.dependency "TencentEffect_#{ver}", '4.2.0.21'
+      ss.dependency "TencentEffect_#{ver}", '4.3.0.11'
     end
   end
 

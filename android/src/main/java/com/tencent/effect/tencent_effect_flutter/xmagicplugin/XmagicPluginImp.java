@@ -601,6 +601,17 @@ public class XmagicPluginImp implements XmagicPlugin {
 
 
 
+    @Override
+    public void setOutputTextureKeepRatio(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        if (call.arguments instanceof Double) {
+            double ratio = (double) call.arguments;
+            XmagicApiManager.getInstance().setOutputTextureKeepRatio((float)ratio);
+            result.success(null);
+        } else {
+            resultParameterError(call.method, result);
+        }
+    }
+
     private void sendBoolData(String methodName, boolean data) {
         Map<String, Object> result = new ArrayMap<>();
         result.put("methodName", methodName);

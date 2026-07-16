@@ -118,26 +118,41 @@ class TEPanelViewState extends State<TEBeautyPanelView> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(height: 50, child: _sliderViewModel != null ? _buildSlider(context) : Container()),
-        Container(
-          child: Column(
+        SizedBox(
+          height: 35,
+          child: Row(
             children: [
-              Align(
-                alignment: Alignment.centerRight,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: _sliderViewModel != null ? _buildSlider(context) : Container(),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 15),
                 child: CompareButton(
                   onPressDown: () {
                     widget._beautyPanelViewCallBack?.onCompareBtnPressed(true);
                   },
-                  onPressUp: (){
+                  onPressUp: () {
                     widget._beautyPanelViewCallBack?.onCompareBtnPressed(false);
                   },
                 ),
               ),
+            ],
+          ),
+        ),
+        
+        Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
               Container(
                   color: TEResConfig.getConfig().panelBackgroundColor,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _isShowSubTitleLayout ? _buildSubTitleLayout() : _buildMainTitleLayout(context),
                       Container(height: 1, color: const Color(0x19FFFFFF), margin: const EdgeInsets.only(bottom: 5)),
@@ -161,7 +176,12 @@ class TEPanelViewState extends State<TEBeautyPanelView> {
         controller: _scrollController,
         shrinkWrap: false,
         scrollDirection: Axis.horizontal,
-        itemBuilder: buildListViewItem,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: buildListViewItem(context, index),
+          );
+        },
         itemCount: _currentList?.length,
       ),
       margin: const EdgeInsets.only(top: 10),
@@ -172,9 +192,12 @@ class TEPanelViewState extends State<TEBeautyPanelView> {
     return GridView.builder(
       controller: _scrollController,
       scrollDirection: Axis.vertical,
+      padding: EdgeInsets.zero,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 5,
-        childAspectRatio: 0.75,
+        mainAxisSpacing: 0,
+        crossAxisSpacing: 0,
+        childAspectRatio: 0.9,
       ),
       itemBuilder: buildListViewItem,
       itemCount: _currentList?.length,
@@ -184,49 +207,66 @@ class TEPanelViewState extends State<TEBeautyPanelView> {
   Widget _buildSubTabBar(BuildContext context) {
     return SizedBox(
       height: 36,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: _subTabItems?.length ?? 0,
-        itemBuilder: (context, index) {
-          TEUIProperty item = _subTabItems![index];
-          bool isSelected = index == _selectedSubTabIndex;
-          return TextButton(
-            onPressed: () {
-              setState(() {
-                _selectedSubTabIndex = index;
-                _currentList = item.propertyList;
-                _updateLayoutMode();
-              });
-              _scrollController.jumpTo(0);
-              _setSliderState(null);
-            },
-            child: Text(
-              TEPanelLocalizations.of(context).getDisplayName(item) ?? '',
-              style: TextStyle(
-                color: isSelected ? Colors.white : Colors.white60,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                fontSize: 12,
+      child: Center(
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemCount: _subTabItems?.length ?? 0,
+          itemBuilder: (context, index) {
+            TEUIProperty item = _subTabItems![index];
+            bool isSelected = index == _selectedSubTabIndex;
+            return TextButton(
+              onPressed: () {
+                setState(() {
+                  _selectedSubTabIndex = index;
+                  _currentList = item.propertyList;
+                  _updateLayoutMode();
+                });
+                _scrollController.jumpTo(0);
+                _setSliderState(null);
+              },
+              child: Text(
+                TEPanelLocalizations.of(context).getDisplayName(item) ?? '',
+                style: TextStyle(
+                  color: isSelected ? Colors.white : Colors.white60,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  fontSize: 12,
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
 
   Widget _buildSubTitleLayout() {
-    return Flex(
-      direction: Axis.horizontal,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-          iconSize: 22,
-          onPressed: onSubTitleBackBtnClick,
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-        ),
-        Text(_subTitleName, style: const TextStyle(color: Colors.white)),
-        Container(width: 30),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double width = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : MediaQuery.of(context).size.width;
+        return SizedBox(
+          width: width,
+          height: 48,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Center(
+                child: Text(_subTitleName, style: const TextStyle(color: Color(0xFFFFFFFF), fontWeight: FontWeight.bold)),
+              ),
+              Positioned(
+                left: 0,
+                child: IconButton(
+                  iconSize: 22,
+                  onPressed: onSubTitleBackBtnClick,
+                  icon: const Icon(Icons.arrow_back_ios, color: Color(0x99FFFFFF)),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -237,6 +277,7 @@ class TEPanelViewState extends State<TEBeautyPanelView> {
     }
     bool hasFirstItemChecked = false;
     for (TEUIProperty property in _panelViewData!) {
+      final bool isSelected = property.uiState == UIState.CHECKED_AND_IN_USE && !hasFirstItemChecked;
       titlesView.add(
         TextButton(
           onPressed: () {
@@ -247,8 +288,8 @@ class TEPanelViewState extends State<TEBeautyPanelView> {
             maxLines: 1,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color:
-                  property.uiState == UIState.CHECKED_AND_IN_USE && !hasFirstItemChecked ? Colors.blue : Colors.white,
+              color: isSelected ? const Color(0xFFFFFFFF) : const Color(0x99FFFFFF),
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
         ),
@@ -305,53 +346,62 @@ class TEPanelViewState extends State<TEBeautyPanelView> {
 
   Widget _buildListViewItemIcon(int index) {
     if (_currentList?[index].icon?.isNotEmpty ?? false) {
-      return Container(
-        width: 45,
-        height: 45,
-        padding: const EdgeInsets.all(1),
-        decoration: _currentList?[index].uiState == UIState.CHECKED_AND_IN_USE
-            ? BoxDecoration(
-                border: Border.all(width: 1, color: Colors.blue.shade500),
-                borderRadius: BorderRadius.circular(8),
-              )
-            : BoxDecoration(
-                border: Border.all(width: 1, color: Colors.transparent),
-                borderRadius: BorderRadius.circular(8),
-              ),
-        child: Image.asset("assets/${_currentList?[index].icon}", width: 45, height: 45),
-      );
+      return Image.asset("assets/${_currentList?[index].icon}", width: 48, height: 48, fit: BoxFit.cover);
     }
-    return Container();
+    return const SizedBox(width: 48, height: 48);
   }
 
   Widget buildListViewItem(BuildContext context, int index) {
+    final bool isChecked = _currentList?[index].uiState == UIState.CHECKED_AND_IN_USE;
     return InkWell(
       onTap: () {
         _onListViewItemClick(index);
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(margin: const EdgeInsets.fromLTRB(10, 0, 10, 0), child: _buildListViewItemIcon(index)),
-          Container(
-            margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-            child: Text(
-              _currentList?[index] == null
-                  ? ""
-                  : TEPanelLocalizations.of(context).getDisplayName(_currentList![index])!,
-              style: const TextStyle(color: Colors.white, fontSize: 11),
-              textAlign: TextAlign.center,
+      child: Center(
+        child: SizedBox(
+          width: 52,
+          height: 80,
+          child: CustomPaint(
+            painter: _PanelItemSelectorPainter(isChecked: isChecked),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: _buildListViewItemIcon(index),
+                ),
+                Container(
+                  height: 20, // Fixed height matching Android's TextView (20dp)
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    _currentList?[index] == null
+                        ? ""
+                        : TEPanelLocalizations.of(context).getDisplayName(_currentList![index])!,
+                    style: TextStyle(
+                      color: isChecked ? Colors.white : Colors.white60,
+                      fontSize: 10,
+                      fontWeight: isChecked ? FontWeight.bold : FontWeight.normal,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Container(
+                    width: 3,
+                    height: 3,
+                    decoration: BoxDecoration(
+                      color: _isShowPoint(_currentList?[index]) ? Color(0xFF006EFF) : Colors.transparent,
+                      borderRadius: const BorderRadius.all(Radius.circular(1.5)),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Container(
-            width: 5,
-            height: 5,
-            decoration: BoxDecoration(
-              color: _isShowPoint(_currentList?[index]) ? Colors.blue : Colors.transparent,
-              borderRadius: const BorderRadius.all(Radius.circular(3)),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -663,5 +713,69 @@ class TEPanelViewState extends State<TEBeautyPanelView> {
 
   String _getTypeDataListViewOffsetKey(TEUIProperty property) {
     return "${property.displayName}${property.displayNameEn}";
+  }
+}
+
+/// Custom painter that replicates Android's PanelItemSelectorLayout selection effect.
+///
+/// When checked:
+/// 1. Draw a full blue rounded rect covering the entire widget.
+/// 2. Use BlendMode.clear to punch out a smaller square area (the icon region),
+///    leaving only the border around the icon area (top/left/right 2px) and a
+///    solid blue fill in the bottom area (text + dot region).
+class _PanelItemSelectorPainter extends CustomPainter {
+  final bool isChecked;
+  static const double _cornerRadius = 11.0;
+  static const double _margin = 2.0; // left, right, top margin for the clear rect
+
+  _PanelItemSelectorPainter({required this.isChecked});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (!isChecked) return;
+
+    final double width = size.width;
+    final double height = size.height;
+
+    // The inner clear rect is a square: width - leftMargin - rightMargin = 48
+    final double innerSize = width - _margin * 2;
+
+    // Bottom blue area height: increased by 1/3 from previous value
+    // Previous: blueRectHeight = height - 10 (bottom blue = 20px)
+    // Now: 20 + 20/3 ≈ 26.7, so blueRectHeight = height - 3.3
+    final double blueRectHeight = height - 3.3;
+
+    // Outer rect: full widget minus bottom 10px
+    final RRect outerRRect = RRect.fromLTRBR(
+      0, 0, width, blueRectHeight,
+      const Radius.circular(_cornerRadius),
+    );
+
+    // Inner rect: square starting from (margin, margin), size = innerSize x innerSize
+    final RRect innerRRect = RRect.fromLTRBR(
+      _margin, _margin, _margin + innerSize, _margin + innerSize,
+      const Radius.circular(_cornerRadius),
+    );
+
+    // Use saveLayer to enable BlendMode.clear
+    canvas.saveLayer(Rect.fromLTWH(0, 0, width, height), Paint());
+
+    // Step 1: Draw the full blue rounded rect
+    final Paint fillPaint = Paint()
+      ..color = const Color(0xFF006EFF)
+      ..style = PaintingStyle.fill;
+    canvas.drawRRect(outerRRect, fillPaint);
+
+    // Step 2: Clear (punch out) the inner square area
+    final Paint clearPaint = Paint()
+      ..blendMode = BlendMode.clear;
+    canvas.drawRRect(innerRRect, clearPaint);
+
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_PanelItemSelectorPainter oldDelegate) {
+    return oldDelegate.isChecked != isChecked;
   }
 }

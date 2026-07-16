@@ -74,6 +74,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/beauty_panel/
+    - assets/beauty_panel/zh_hant/
     - assets/beauty_panel/panel_icon/beauty/
     - assets/beauty_panel/panel_icon/beauty/beauty_smooth/
     - assets/beauty_panel/panel_icon/beauty/eyes_makeup/
@@ -84,6 +85,7 @@ flutter:
     - assets/beauty_panel/panel_icon/beauty_template/
     - assets/beauty_panel/panel_icon/lut_icon/
     - assets/beauty_panel/panel_icon/light_makeup_icon/
+    - assets/beauty_panel/panel_icon/makeup_icon/
     - assets/beauty_panel/panel_icon/motions_icon/
     - assets/labels/
 

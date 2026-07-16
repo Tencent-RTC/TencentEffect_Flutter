@@ -615,6 +615,16 @@ public class XmagicApiManager implements SensorEventListener, XmagicAIDataListen
     }
 
 
+    public void setOutputTextureKeepRatio(float ratio) {
+        if (xMagicApiIsNull()) {
+            LogUtils.e(TAG, "setOutputTextureKeepRatio: xmagicApi is null ");
+            return;
+        }
+        
+        xmagicApi.setOutputTextureKeepRatio(ratio);
+    }
+
+
     /**
      * 清空所有缓存的待处理数据（包括effect、syncMode等）
      */

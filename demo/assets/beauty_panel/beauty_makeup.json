@@ -2,6 +2,7 @@
     "displayName":"单点美妆",
     "displayNameEn":"Point Makeup",
     "hasSubTitle":true,
+    "verticalLayout":true,
     "propertyList":[
         {
             "displayName":"口红",

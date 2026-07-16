@@ -263,6 +263,12 @@ static XmagicApiManager *shareSingleton = nil;
     _isBeautyProcessPaused = paused;
 }
 
+-(void)setOutputTextureKeepRatio:(float)ratio{
+    if (self.xMagicApi != nil) {
+        [self.xMagicApi setOutputTextureKeepRatio:ratio];
+    }
+}
+
 //Determine which beauties (beauty and body) are supported by the current license authorization
 
 -(NSString *)isBeautyAuthorized:(NSString *)jsonString{
@@ -599,6 +605,54 @@ static XmagicApiManager *shareSingleton = nil;
     }
 }
 
+
+// 处理 CVPixelBuffer 路径（无 GL 上下文场景使用，例如 iOS TRTC Metal 渲染管线）
+// 返回值：retain 过的 CVPixelBufferRef，**调用方负责 CFRelease**；失败返回 NULL
+-(CVPixelBufferRef _Nullable)processPixelBuffer:(CVPixelBufferRef _Nonnull)pixelBuffer
+                                          width:(int)width
+                                         height:(int)height{
+    if (pixelBuffer == NULL) {
+        return NULL;
+    }
+    [self.lock lock];
+    // 首帧懒初始化（与 getTextureId: 一致）
+    if (self.xMagicApi == nil) {
+        [self buildBeautySDK:width and:height];
+        self.heightF = height;
+        self.widthF = width;
+    }
+    // 美颜暂停（按下对比按钮）：返回 NULL，调用方用原始 pixelBuffer
+    if (self.isBeautyProcessPaused) {
+        self.needRefreshOnResume = YES;
+        [self.lock unlock];
+        return NULL;
+    }
+    // 分辨率变化时同步刷新 render size
+    if (self.xMagicApi != nil && (self.heightF != (NSUInteger)height || self.widthF != (NSUInteger)width)) {
+        [self.xMagicApi setRenderSize:CGSizeMake(width, height)];
+        self.heightF = height;
+        self.widthF = width;
+    }
+    YTProcessInput *input = [[YTProcessInput alloc] init];
+    input.pixelData = [[YTImagePixelData alloc] init];
+    input.pixelData.data = pixelBuffer;
+    input.pixelData.rotation = 0;
+    input.dataType = kYTImagePixelData;
+    // 暂停模式刚结束时多走一次 process，避免画面闪烁（与 getTextureId 行为一致）
+    if (self.needRefreshOnResume) {
+        self.needRefreshOnResume = NO;
+        [self.xMagicApi process:input withOrigin:YtLightImageOriginTopLeft withOrientation:YtLightCameraRotation0];
+    }
+    YTProcessOutput *output = [self.xMagicApi process:input withOrigin:YtLightImageOriginTopLeft withOrientation:YtLightCameraRotation0];
+    CVPixelBufferRef outBuffer = (output != nil && output.pixelData != nil) ? output.pixelData.data : NULL;
+    if (outBuffer != NULL) {
+        // XMagic 输出的 pixelBuffer 生命周期归 SDK 内部缓存所有；
+        // 我们 retain 一份返回给调用方，调用方使用完后必须 CFRelease。
+        CFRetain(outBuffer);
+    }
+    [self.lock unlock];
+    return outBuffer;
+}
 
 //return TextureId
 -(int)getTextureId:(ITXCustomBeautyVideoFrame * _Nonnull)srcFrame{

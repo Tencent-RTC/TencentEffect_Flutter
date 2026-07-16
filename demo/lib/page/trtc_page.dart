@@ -7,13 +7,11 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tencent_effect_flutter/api/tencent_effect_api.dart';
-import 'package:tencent_effect_flutter/model/xmagic_property.dart';
 import 'package:tencent_effect_flutter/uikit/config/te_res_config.dart';
 import 'package:tencent_effect_flutter/uikit/model/te_ui_property.dart';
 import 'package:tencent_effect_flutter/uikit/producer/te_general_data_producer.dart';
 import 'package:tencent_effect_flutter/uikit/producer/te_panel_data_producer.dart';
 import 'package:tencent_effect_flutter/uikit/view/te_beauty_panel_view.dart';
-import 'package:tencent_effect_flutter/utils/Logs.dart';
 import 'package:tencent_effect_flutter_demo/page/param_local_manager.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_video_view.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud.dart';
@@ -55,6 +53,7 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
   int quality = TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT;
 
   bool _isOpenBeauty = true;
+  bool _isKeepRatio = false;
   late TEDeviceOrientation _deviceOrientation;
 
   final DemoPanelViewCallBack beautyPanelViewCallBack =
@@ -307,20 +306,23 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              TextButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue)),
-                onPressed: () async {
-                  bool? delete = await showExitMeetingConfirmDialog();
-                  if (delete != null) {
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text(
-                  "Exit Meeting",
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.white,
+              Visibility(
+                visible: false,
+                child: TextButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.blue)),
+                  onPressed: () async {
+                    bool? delete = await showExitMeetingConfirmDialog();
+                    if (delete != null) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: const Text(
+                    "Exit Meeting",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -338,14 +340,33 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
                         _isOpenBeauty = value;
                       });
                       if (value) {
-                        TencentEffectApi.getApi()!.setXmagicApiCreatedListener((data) async {
-                          TencentEffectApi.getApi()!.setXmagicApiCreatedListener(null);
-                          if (lastSdkParam != null && lastSdkParam!.isNotEmpty) {
-                            beautyPanelViewCallBack.onUpdateEffectList(lastSdkParam!);
-                          }
-                        });
+                        if (lastSdkParam != null && lastSdkParam!.isNotEmpty) {
+                          beautyPanelViewCallBack.onUpdateEffectList(lastSdkParam!);
+                        }
                       }
                       enableBeauty(value);
+                    },
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Text(
+                    'KeepRatio',
+                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  ),
+                  Switch(
+                    value: _isKeepRatio,
+                    onChanged: (value) {
+                      setState(() {
+                        _isKeepRatio = value;
+                      });
+                      if (value) {
+                        TencentEffectApi.getApi()?.setOutputTextureKeepRatio(0.9);
+                      } else {
+                        TencentEffectApi.getApi()?.setOutputTextureKeepRatio(1);
+                      }
                     },
                   ),
                 ],
@@ -355,19 +376,7 @@ class TRTCPageState extends State<TRTCPage> with WidgetsBindingObserver {
         ));
   }
 
-  _getProperties(List<XmagicProperty> resultList,
-      List<XmagicUIProperty>? uiPropertiesList) {
-    if (uiPropertiesList == null) {
-      return;
-    }
-    for (XmagicUIProperty uiProperty in uiPropertiesList) {
-      if (uiProperty.xmagicUIPropertyList != null) {
-        _getProperties(resultList, uiProperty.xmagicUIPropertyList);
-      } else if (uiProperty.property != null && uiProperty.isUsed) {
-        resultList.add(uiProperty.property!);
-      }
-    }
-  }
+
 
   Widget buildPanelView() {
     return Align(

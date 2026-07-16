@@ -31,6 +31,7 @@ class TEProducerUtils {
     TEffectName.BEAUTY_SMOOTH2,
     TEffectName.BEAUTY_SMOOTH3,
     TEffectName.BEAUTY_SMOOTH4,
+    TEffectName.BEAUTY_SMOOTH5,
   ];
 
   ///

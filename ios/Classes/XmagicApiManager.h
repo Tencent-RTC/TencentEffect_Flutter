@@ -6,6 +6,8 @@
 //  Copyright (c) 2020 Tencent. All rights reserved.
 
 #import <Foundation/Foundation.h>
+#import <CoreVideo/CoreVideo.h>
+#import <CoreMedia/CoreMedia.h>
 @import TXCustomBeautyProcesserPlugin;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -37,6 +39,24 @@ typedef void (^onXmagicApiCreated)();
 
 //get TextureId
 -(int)getTextureId:(ITXCustomBeautyVideoFrame * _Nonnull)srcFrame;
+
+/**
+ * @brief 处理 CVPixelBuffer 数据并返回美颜后的 CVPixelBuffer。
+ *
+ * 适用于无 GL 上下文环境（如 TRTC iOS Metal 渲染管线 / AVCaptureSession 直采）。
+ * - 首帧会按 (width,height) 自动初始化 XMagic（与 getTextureId 共用单例）。
+ * - 线程安全：内部已加锁。
+ * - 返回值：成功时返回 retain 过的 CVPixelBufferRef，**调用方负责 CFRelease**；
+ *           失败 / 暂停 / API 未就绪时返回 NULL（此时调用方应使用原始 pixelBuffer 透传）。
+ *
+ * @param pixelBuffer 输入 BGRA CVPixelBuffer
+ * @param width  纹理宽度
+ * @param height 纹理高度
+ * @return 处理后的 CVPixelBuffer（已 retain，需 CFRelease）；失败返回 NULL。
+ */
+-(CVPixelBufferRef _Nullable)processPixelBuffer:(CVPixelBufferRef _Nonnull)pixelBuffer
+                                          width:(int)width
+                                         height:(int)height CF_RETURNS_RETAINED;
 
 
 -(void)updateProperty:(NSString *)json;
@@ -85,6 +105,8 @@ typedef void (^onXmagicApiCreated)();
 
 // 设置美颜处理暂停状态：paused为YES时暂停美颜处理（展示原始画面），为NO时恢复美颜处理
 -(void)setBeautyProcessPaused:(BOOL)paused;
+
+-(void)setOutputTextureKeepRatio:(float)ratio;
 
 @end
 
