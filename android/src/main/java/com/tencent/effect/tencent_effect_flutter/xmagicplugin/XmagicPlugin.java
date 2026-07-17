@@ -73,4 +73,6 @@ public interface XmagicPlugin {
 
     void setBeautyProcessPaused(@NonNull MethodCall call, @NonNull MethodChannel.Result result);
 
+    void setOutputTextureKeepRatio(@NonNull MethodCall call, @NonNull MethodChannel.Result result);
+
 }

@@ -260,7 +260,8 @@ class TEDownloadManager {
     final client = http.Client();
     IOSink? sink;
     try {
-      final request = http.Request('GET', Uri.parse(task.url));
+      final trimmedUrl = task.url.trim();
+      final request = http.Request('GET', Uri.parse(trimmedUrl));
       // 发送请求，设置30秒超时
       final streamedResponse = await client.send(request).timeout(const Duration(seconds: 30));
 

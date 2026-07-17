@@ -18,15 +18,12 @@ class CompareButton extends StatelessWidget {
       onTapDown: (_) => onPressDown?.call(),
       onTapUp: (_) => onPressUp?.call(),
       onTapCancel: () => onPressUp?.call(),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Image.asset(
+      child: Image.asset(
           'assets/icon/te_beauty_panel_view_compare_icon.png',
           package: 'tencent_effect_flutter',
-          width: 30,
-          height: 30,
+          width: 35,
+          height: 35,
         ),
-      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -12,6 +13,7 @@ import 'package:tencent_effect_flutter/uikit/l10n/te_panel_localizations.dart';
 import 'package:tencent_effect_flutter/uikit/manager/te_res_path_manager.dart';
 import 'package:tencent_effect_flutter/utils/Logs.dart';
 import 'package:tencent_effect_flutter_demo/config/te_app_config.dart';
+import 'package:tencent_effect_flutter_demo/languages/TEPanelLocalizationsZhTW.dart';
 import 'package:tencent_effect_flutter_demo/languages/app_localization_delegate.dart';
 import 'package:tencent_effect_flutter_demo/page/live_page.dart';
 import 'package:tencent_effect_flutter_demo/page/trtc_page.dart';
@@ -33,6 +35,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         localizationsDelegates: const [
+          TEPanelLocalizationsZhTWDelegate(),
           GlobalWidgetsLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
@@ -41,7 +44,11 @@ class MyApp extends StatelessWidget {
         ],
         supportedLocales: const [
           Locale.fromSubtags(languageCode: 'en'),
-          Locale.fromSubtags(languageCode: 'zh')
+          Locale.fromSubtags(languageCode: 'zh'),
+          Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+          Locale.fromSubtags(languageCode: 'zh', countryCode: 'TW'),
+          Locale.fromSubtags(languageCode: 'zh', countryCode: 'HK'),
+          Locale.fromSubtags(languageCode: 'zh', countryCode: 'MO'),
         ],
         initialRoute: "/",
         routes: <String, WidgetBuilder>{
@@ -62,8 +69,6 @@ class HomePage extends StatefulWidget {
 
 class _HomeState extends State<HomePage> {
   static const String TAG = "_HomeState";
-
-
 
   @override
   void initState() {
@@ -117,33 +122,33 @@ class _HomeState extends State<HomePage> {
                 ),
                 Expanded(
                     child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Radio(
-                            value: EffectMode.NORMAL,
-                            onChanged: (value) {
-                              setState(() {
-                                TeAppConfig.instance.effectMode = value! as EffectMode;
-                              });
-                            },
-                            groupValue: TeAppConfig.instance.effectMode,
-                          ),
-                          const Text("Normal"),
-                          Radio(
-                            value: EffectMode.PRO,
-                            onChanged: (value) {
-                              setState(() {
-                                TeAppConfig.instance.effectMode = value! as EffectMode;
-                              });
-                            },
-                            groupValue: TeAppConfig.instance.effectMode,
-                          ),
-                          const Text("Pro"),
-                        ],
+                  alignment: Alignment.centerRight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Radio(
+                        value: EffectMode.NORMAL,
+                        onChanged: (value) {
+                          setState(() {
+                            TeAppConfig.instance.effectMode = value! as EffectMode;
+                          });
+                        },
+                        groupValue: TeAppConfig.instance.effectMode,
                       ),
-                    ))
+                      const Text("Normal"),
+                      Radio(
+                        value: EffectMode.PRO,
+                        onChanged: (value) {
+                          setState(() {
+                            TeAppConfig.instance.effectMode = value! as EffectMode;
+                          });
+                        },
+                        groupValue: TeAppConfig.instance.effectMode,
+                      ),
+                      const Text("Pro"),
+                    ],
+                  ),
+                ))
               ],
             ),
           ),
@@ -151,9 +156,8 @@ class _HomeState extends State<HomePage> {
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text(
-                    AppLocalizations.of(context)?.getEffectModeDes ?? "",
-                    style: const TextStyle(fontSize: 16.0)),
+                child:
+                    Text(AppLocalizations.of(context)?.getEffectModeDes ?? "", style: const TextStyle(fontSize: 16.0)),
               ),
             ),
           )
@@ -176,8 +180,6 @@ class _HomeState extends State<HomePage> {
     }
   }
 
-
-
   void _copyRes(InitXmagicCallBack callBack) {
     _showDialog(context);
     TencentEffectApi.getApi()?.initXmagic((result) {
@@ -195,10 +197,8 @@ class _HomeState extends State<HomePage> {
   void _onClickLive(BuildContext context) {
     _initSettings((result) {
       if (result) {
-        TencentEffectApi.getApi()?.setLicense(licenseKey, licenseUrl,
-            (errorCode, msg) {
-          TXLog.printlog(
-              '$TAG  setLicense result : errorCode =$errorCode ,msg = $msg');
+        TencentEffectApi.getApi()?.setLicense(licenseKey, licenseUrl, (errorCode, msg) {
+          TXLog.printlog('$TAG  setLicense result : errorCode =$errorCode ,msg = $msg');
           if (errorCode == 0) {
             _requestPermission(context, "/page_Live");
           }
@@ -210,10 +210,8 @@ class _HomeState extends State<HomePage> {
   void _onClickTRTC(BuildContext context) {
     _initSettings((result) {
       if (result) {
-        TencentEffectApi.getApi()?.setLicense(licenseKey, licenseUrl,
-            (errorCode, msg) {
-          TXLog.printlog(
-              '$TAG  setLicense result : errorCode =$errorCode ,msg = $msg');
+        TencentEffectApi.getApi()?.setLicense(licenseKey, licenseUrl, (errorCode, msg) {
+          TXLog.printlog('$TAG  setLicense result : errorCode =$errorCode ,msg = $msg');
           if (errorCode == 0) {
             _requestPermission(context, "/page_TRTC");
           }
@@ -249,23 +247,42 @@ class _HomeState extends State<HomePage> {
   }
 
   void initPanelViewConfig() {
+    String panelDir = "assets/beauty_panel/";
+    String jsonFileSuffix =".json";
     TEResConfig.getConfig().defaultPanelDataList.clear();
-    String templateJson = Platform.isAndroid ? "assets/beauty_panel/beauty_template.json":
-    "assets/beauty_panel/beauty_template_ios.json";
+
+    //这里是多语言适配的示例代码，判断出当前语言环境，加载对应语言的json文件，面板中默认的json中只支持简体中文和英文，如果现在需要支持繁体中文，咱们就可以这样操作
+    //在beauty_panel下创建一个zt_hant 的文件夹，然后复制现有的json文件到此目录，然后将disPlayName的值修改为繁体中文，在需要使用的时候加载这个json文件即可。
+    // 注意：这里只是对面板json文件的多语言适配，还有库中使用的文字适配可以参考 demo/lib/languages/TEPanelLocalizationsZhTW.dart 文件
+    // 多语言实现可参考：tencent-effect-flutter/docs/MULTI_LANGUAGE_GUIDE_.md
+
+
+    // 判断当前设备语言环境是否为繁体中文
+    Locale currentLocale = PlatformDispatcher.instance.locale;
+    bool isTraditionalChinese = currentLocale.languageCode == 'zh' &&
+        (currentLocale.countryCode == 'TW' ||
+            currentLocale.countryCode == 'HK' ||
+            currentLocale.countryCode == 'MO' ||
+            currentLocale.scriptCode == 'Hant');
+    if (isTraditionalChinese) {
+      panelDir = "assets/beauty_panel/zh_hant/";
+      jsonFileSuffix = "_zh_hant.json";
+    }
+
     TEResConfig.getConfig()
-      ..setBeautyTemplateRes(templateJson)
-      ..setBeautyRes("assets/beauty_panel/beauty.json")
-      ..setBeautyRes("assets/beauty_panel/beauty_image.json")
-      ..setBeautyRes("assets/beauty_panel/beauty_makeup.json")
-      ..setBeautyRes("assets/beauty_panel/beauty_shape.json")
-      ..setBeautyBodyRes("assets/beauty_panel/beauty_body.json")
-      ..setLutRes("assets/beauty_panel/lut.json")
-      ..setLightMakeupRes("assets/beauty_panel/light_makeup.json")
-      ..setMakeUpRes("assets/beauty_panel/makeup.json")
-      ..setMotionRes("assets/beauty_panel/motions_2d.json")
-      ..setMotionRes("assets/beauty_panel/motions_3d.json")
-      ..setMotionRes("assets/beauty_panel/motions_gesture.json")
-      ..setSegmentationRes("assets/beauty_panel/segmentation.json");
+      ..setBeautyTemplateRes("${panelDir}beauty_template${jsonFileSuffix}")
+      ..setBeautyRes("${panelDir}beauty${jsonFileSuffix}")
+      ..setBeautyRes("${panelDir}beauty_image${jsonFileSuffix}")
+      ..setBeautyRes("${panelDir}beauty_makeup${jsonFileSuffix}")
+      ..setBeautyRes("${panelDir}beauty_shape${jsonFileSuffix}")
+      ..setBeautyBodyRes("${panelDir}beauty_body${jsonFileSuffix}")
+      ..setLutRes("${panelDir}lut${jsonFileSuffix}")
+      ..setLightMakeupRes("${panelDir}light_makeup${jsonFileSuffix}")
+      ..setMakeUpRes("${panelDir}makeup${jsonFileSuffix}")
+      ..setMotionRes("${panelDir}motion_2d${jsonFileSuffix}")
+      ..setMotionRes("${panelDir}motion_3d${jsonFileSuffix}")
+      ..setMotionRes("${panelDir}motion_gesture${jsonFileSuffix}")
+      ..setSegmentationRes("${panelDir}segmentation${jsonFileSuffix}");
   }
 
   Future<bool> isCopiedRes() async {
@@ -283,8 +300,7 @@ class _HomeState extends State<HomePage> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String currentAppVersionName = packageInfo.version;
-    await sharedPreferences.setString(
-        "app_version_name", currentAppVersionName);
+    await sharedPreferences.setString("app_version_name", currentAppVersionName);
   }
 
   _onTestPressed(BuildContext context) async {

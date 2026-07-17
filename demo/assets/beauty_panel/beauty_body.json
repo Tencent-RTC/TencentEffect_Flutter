@@ -1,6 +1,6 @@
 {
     "displayName":"美体",
-    "displayNameEn":"Body Shaping",
+    "displayNameEn":"Body",
     "propertyList":[
         {
             "displayName":"关闭",
@@ -18,7 +18,7 @@
         },
         {
             "displayName":"长腿",
-            "displayNameEn":"Longlegs",
+            "displayNameEn":"Long Legs",
             "icon":"beauty_panel/panel_icon/beauty_body/body_leg_stretch.png",
             "sdkParam":{
                 "effectName":"body.legStretch",
@@ -27,7 +27,7 @@
         },
         {
             "displayName":"瘦腿",
-            "displayNameEn":"Thinlegs",
+            "displayNameEn":"Slim Legs",
             "icon":"beauty_panel/panel_icon/beauty_body/body_slim_leg_strength.png",
             "sdkParam":{
                 "effectName":"body.slimLegStrength",
@@ -35,8 +35,17 @@
             }
         },
         {
+            "displayName":"瘦胳膊",
+            "displayNameEn":"Slim Arms",
+            "icon":"beauty_panel/panel_icon/beauty_body/body_slim_arm_strength.png",
+            "sdkParam":{
+                "effectName":"body.slimArmStrength",
+                "effectValue":0
+            }
+        },
+        {
             "displayName":"瘦腰",
-            "displayNameEn":"Slimwaist",
+            "displayNameEn":"Slim Waist",
             "icon":"beauty_panel/panel_icon/beauty_body/body_waish_strength.png",
             "sdkParam":{
                 "effectName":"body.waistStrength",
@@ -45,7 +54,7 @@
         },
         {
             "displayName":"瘦肩",
-            "displayNameEn":"Slimshoulder",
+            "displayNameEn":"Slim Shoulder",
             "icon":"beauty_panel/panel_icon/beauty_body/body_thin_shoulder_strength.png",
             "sdkParam":{
                 "effectName":"body.thinShoulderStrength",
@@ -54,7 +63,7 @@
         },
         {
             "displayName":"胸部调整",
-            "displayNameEn":"BreastAdjust",
+            "displayNameEn":"Breast Adjust",
             "icon":"beauty_panel/panel_icon/beauty_body/body_beauty_chest.png",
             "sdkParam":{
                 "effectName":"body.enlargeChestStrength",
@@ -63,12 +72,13 @@
         },
         {
             "displayName":"小头",
-            "displayNameEn":"Headsize",
+            "displayNameEn":"Slim Head",
             "icon":"beauty_panel/panel_icon/beauty_body/body_slim_head_strength.png",
             "sdkParam":{
                 "effectName":"body.slimHeadStrength",
                 "effectValue":0
             }
         }
-    ]
+    ],
+    "uiState":2
 }

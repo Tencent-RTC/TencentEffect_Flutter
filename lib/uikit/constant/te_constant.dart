@@ -33,6 +33,7 @@ class TEffectName {
   static const String BEAUTY_SMOOTH2 = "smooth.smooth2";
   static const String BEAUTY_SMOOTH3 = "smooth.smooth3";
   static const String BEAUTY_SMOOTH4 = "smooth.smooth4";
+  static const String BEAUTY_SMOOTH5 = "smooth.smooth5";
 
 
   //gan skin retouch

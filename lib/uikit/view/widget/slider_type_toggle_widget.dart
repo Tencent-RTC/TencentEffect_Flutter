@@ -13,24 +13,56 @@ class SliderTypeToggleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: 30,
-      width: 100,
-      child: ToggleButtons(
-        renderBorder: true,
-        borderRadius: BorderRadius.circular(20),
-        borderColor: Colors.white30,
-        selectedBorderColor: Colors.blue,
-        textStyle: const TextStyle(fontSize: 12),
-        isSelected: selectedList,
-        color: Colors.white70,
-        fillColor: Colors.blue,
-        selectedColor: Colors.white,
-        onPressed: onPressed,
-        children: <Widget>[
-          Text(TEPanelLocalizations.of(context).makeup),
-          Text(TEPanelLocalizations.of(context).lut)
+      width: 95,
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: const Color(0xA6FFFFFF),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildItem(
+              context,
+              TEPanelLocalizations.of(context).makeup,
+              selectedList[0],
+              0,
+            ),
+          ),
+          Expanded(
+            child: _buildItem(
+              context,
+              TEPanelLocalizations.of(context).lut,
+              selectedList[1],
+              1,
+            ),
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildItem(BuildContext context, String text, bool isSelected, int index) {
+    return GestureDetector(
+      onTap: () => onPressed(index),
+      child: Container(
+        alignment: Alignment.center,
+        decoration: isSelected
+            ? BoxDecoration(
+                color: const Color(0xFFFFFFFF),
+                borderRadius: BorderRadius.circular(15),
+              )
+            : null,
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 12,
+            color: isSelected ? const Color(0xCC000000) : const Color(0x4D000000),
+            fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+          ),
+        ),
       ),
     );
   }

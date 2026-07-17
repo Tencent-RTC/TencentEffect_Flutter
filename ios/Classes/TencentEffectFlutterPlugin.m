@@ -158,6 +158,12 @@ static TencentEffectFlutterPlugin* _instance = nil;
           [[XmagicApiManager shareSingleton] setBeautyProcessPaused:beautyProcessPaused];
       }
       result(nil);
+  }else if ([@"setOutputTextureKeepRatio" isEqualToString:call.method]) {
+      if([call.arguments isKindOfClass:[NSNumber class]]) {
+          float ratio = [call.arguments floatValue];
+          [[XmagicApiManager shareSingleton] setOutputTextureKeepRatio:ratio];
+      }
+      result(nil);
   }else {
     result(FlutterMethodNotImplemented);
   }

@@ -108,6 +108,8 @@ abstract class TencentEffectApi {
 
   Future<bool> isDeviceSupportMotion(String motionResPath);
 
+  void setOutputTextureKeepRatio(double ratio);
+
   @deprecated
   Future<List<XmagicProperty>> isDeviceSupport(List<XmagicProperty> assetsList);
 }

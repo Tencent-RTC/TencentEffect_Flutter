@@ -9,17 +9,9 @@ import 'package:tencent_effect_flutter_demo/view/common_dialog.dart';
 
 class DemoPanelViewCallBack extends TEDefaultPanelViewCallBack {
   final bool _pickImg = true;
-  List<TESDKParam>? defaultEffectParams;   //用于保存首次面板回来的数据，但是这个时候美颜native
-  // 端的对象没有创建成功时，需要先将这个美颜参数保存一下，等native 端成功之后再设置参数，下边构造方法中的监听就是监听native 端是否创建成功
 
-  // DemoPanelViewCallBack() {
-  //   TencentEffectApi.getApi()?.setXmagicApiCreatedListener((int code) {
-  //     if (defaultEffectParams != null && defaultEffectParams!.isNotEmpty) {
-  //       onUpdateEffectList(defaultEffectParams!);
-  //       defaultEffectParams = null;
-  //     }
-  //   });
-  // }
+
+ 
 
   @override
   Future<void> onClickCustomSeg(TEUIProperty uiProperty) async {
@@ -53,7 +45,7 @@ class DemoPanelViewCallBack extends TEDefaultPanelViewCallBack {
   @override
   void onDefaultEffectList(List<TESDKParam> paramList) {
     super.onDefaultEffectList(paramList);
-    defaultEffectParams = paramList;
+
   }
 
 
