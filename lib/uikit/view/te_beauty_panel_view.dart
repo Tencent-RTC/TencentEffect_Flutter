@@ -610,6 +610,29 @@ class TEPanelViewState extends State<TEBeautyPanelView> {
     return uiProperty.sdkParam;
   }
 
+  bool isBeautyMakeupNoneItem(TESDKParam? sdkParam) {
+    if (sdkParam != null && (sdkParam.resourcePath == null || sdkParam.resourcePath!.isEmpty)) {
+      switch (sdkParam.effectName) {
+        case "beauty.faceFeatureLipsLut":
+        case "beauty.faceFeatureSoftlight":
+        case "beauty.faceFeatureRedCheek":
+        case "beauty.faceFeatureEyesMakeup.eyeShadow":
+        case "beauty.faceFeatureEyesMakeup.eyeLiner":
+        case "beauty.faceFeatureEyesMakeup.eyelash":
+        case "beauty.faceFeatureEyesMakeup.eyeSequins":
+        case "beauty.faceFeatureEyesMakeup.eyebrow":
+        case "beauty.faceFeatureEyesMakeup.eyeball":
+        case "beauty.faceFeatureEyesMakeup.eyelids":
+        case "beauty.faceFeatureEyesMakeup.eyewocan":
+        case "beauty.hairColorLut":
+          return true;
+        default:
+          return false;
+      }
+    }
+    return false;
+  }
+
   void _setSliderState(TESDKParam? sdkParam) {
     // Don't show slider for GREEN_BACKGROUND_V2_ITEM_IMPORT_IMAGE
     if (_currentList != null && _currentList!.isNotEmpty) {
@@ -622,6 +645,14 @@ class TEPanelViewState extends State<TEBeautyPanelView> {
           return;
         }
       }
+    }
+
+    // 美妆无效果项不显示slider
+    if (isBeautyMakeupNoneItem(sdkParam)) {
+      setState(() {
+        _sliderViewModel = null;
+      });
+      return;
     }
 
     _sliderViewModel = SliderAdapter.fromSDKParam(
