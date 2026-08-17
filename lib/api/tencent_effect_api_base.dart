@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import '../api/tencent_effect_api.dart';
-import '../utils/Logs.dart';
+import '../utils/te_logs.dart';
 import '../utils/xmagic_decode_utils.dart';
 import '../model/xmagic_property.dart';
 

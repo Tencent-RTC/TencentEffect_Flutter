@@ -1,4 +1,4 @@
-import '../utils/Logs.dart';
+import '../utils/te_logs.dart';
 import '../utils/xmagic_decode_utils.dart';
 
 @deprecated
