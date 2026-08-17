@@ -11,7 +11,7 @@ import 'package:tencent_effect_flutter/api/tencent_effect_api.dart';
 import 'package:tencent_effect_flutter/uikit/config/te_res_config.dart';
 import 'package:tencent_effect_flutter/uikit/l10n/te_panel_localizations.dart';
 import 'package:tencent_effect_flutter/uikit/manager/te_res_path_manager.dart';
-import 'package:tencent_effect_flutter/utils/Logs.dart';
+import 'package:tencent_effect_flutter/utils/te_logs.dart';
 import 'package:tencent_effect_flutter_demo/config/te_app_config.dart';
 import 'package:tencent_effect_flutter_demo/languages/TEPanelLocalizationsZhTW.dart';
 import 'package:tencent_effect_flutter_demo/languages/app_localization_delegate.dart';

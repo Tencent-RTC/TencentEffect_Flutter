@@ -11,7 +11,7 @@ import 'package:live_flutter_plugin/widget/v2_tx_live_video_widget.dart';
 import 'package:tencent_effect_flutter/api/tencent_effect_api.dart';
 import 'package:tencent_effect_flutter/uikit/manager/te_res_path_manager.dart';
 import 'package:tencent_effect_flutter/uikit/view/te_beauty_panel_view.dart';
-import 'package:tencent_effect_flutter/utils/Logs.dart';
+import 'package:tencent_effect_flutter/utils/te_logs.dart';
 import '../../languages/AppLocalizations.dart';
 import '../config/te_app_config.dart';
 import 'demo_panel_view_callback.dart';

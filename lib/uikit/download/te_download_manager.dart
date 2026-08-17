@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../../uikit/download/te_download_task.dart';
 import '../../uikit/download/te_download_state.dart';
 import '../../uikit/download/te_material_checker.dart';
-import '../../utils/logs.dart';
+import '../../utils/te_logs.dart';
 
 import '../model/te_ui_property.dart';
 

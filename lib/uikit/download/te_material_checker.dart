@@ -1,5 +1,5 @@
 import 'dart:io';
-import '../../utils/logs.dart';
+import '../../utils/te_logs.dart';
 import '../model/te_ui_property.dart';
 
 /// 素材检查器 - 用于检查素材是否已下载
