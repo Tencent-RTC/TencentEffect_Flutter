@@ -27,6 +27,27 @@ class TEParamManager {
     }
   }
 
+  /// 按 key 移除指定参数。
+  ///
+  /// 对应 Android 端 `TEParamManager.remove(TEUIProperty.TESDKParam)`。
+  void remove(TESDKParam? param) {
+    if (param == null) {
+      return;
+    }
+    final String? key = getKey(param);
+    if (key != null) {
+      allData.remove(key);
+    }
+  }
+
+  /// 获取当前生效的轻美妆参数。
+  ///
+  /// 对应 Android 端 `TEParamManager.getLightMakeup()`。
+  /// 轻美妆的 key 即 `effectName`（`light.makeup`）。
+  TESDKParam? getLightMakeup() {
+    return allData[TEffectName.EFFECT_LIGHT_MAKEUP];
+  }
+
   void putTEParams(List<TESDKParam>? paramList) {
     if (paramList != null && paramList.isNotEmpty) {
       for (TESDKParam teParam in paramList) {

@@ -6,12 +6,12 @@ For more documentation, refer to the [official website](https://www.tencentcloud
 
 ## 1. Environment Requirements
 
-- Flutter 3.0.0 or later.
+- Flutter 3.0.0 or later (3.44.0 or later is required when integrating iOS with Swift Package Manager).
 
 | Developing for Android:            | Developing for iOS & macOS:            |
 | ---------------------------------- | -------------------------------------- |
-| Android Studio 3.5 or later.      | Xcode 11.0 or later.                 |
-| Devices with Android 5.0 or above | macOS version 10.11 or later         |
+| Android Studio 3.5 or later.      | Xcode 15.0 or later.                 |
+| Devices with Android 5.0 or above | Devices with iOS 12.0 or above        |
 |                                    | Ensure your project has a valid developer signature. |
 
 ## 2. Run

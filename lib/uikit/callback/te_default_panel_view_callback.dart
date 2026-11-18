@@ -85,8 +85,8 @@ abstract class TEDefaultPanelViewCallBack implements TEBeautyPanelViewCallBack {
           List<TESDKParam>? cleared = TEProducerUtils.clone0ValuedParam(oldTemplateParams);
           if (cleared != null) tempManager.putTEParams(cleared);
         }
-        // Clear independent beauty/LUT data
-        if (TEProducerUtils.isBeautyOrLutName(param.effectName)) {
+        // Clear independent beauty/LUT/light-makeup data
+        if (TEProducerUtils.isBeautyLutLightMakeupName(param.effectName)) {
           TESDKParam cloneParam = param.clone();
           cloneParam.effectValue = 0;
           cloneParam.resourcePath = null;
@@ -98,11 +98,18 @@ abstract class TEDefaultPanelViewCallBack implements TEBeautyPanelViewCallBack {
       if (sdkParam.tag is List) {
         tempManager.putTEParams(sdkParam.tag as List<TESDKParam>);
       }
+      // 若待下发参数中包含轻美妆（即上一步生成的"清零副本"），必须先下发轻美妆。
+      // 模板的美颜参数一旦先行下发，再关闭轻美妆会让画面残留上一套妆容。
+      final TESDKParam? lightMakeupItem = tempManager.getLightMakeup();
+      if (lightMakeupItem != null) {
+        tempManager.remove(lightMakeupItem);
+        await _setEffectToSDK(lightMakeupItem);
+      }
       // Apply all merged params to SDK
       for (TESDKParam param in tempManager.getParams()) {
         _setEffectToSDK(param);
       }
-    } else if (TEProducerUtils.isBeautyOrLutName(sdkParam.effectName)) {
+    } else if (TEProducerUtils.isBeautyLutLightMakeupName(sdkParam.effectName)) {
       // If there was a template, decompose it into individual params
       TESDKParam? templateData = paramManager.allData[TESDKParam.BEAUTY_TEMPLATE_EFFECT_NAME];
       if (templateData != null) {
@@ -117,7 +124,10 @@ abstract class TEDefaultPanelViewCallBack implements TEBeautyPanelViewCallBack {
     }
   }
 
-  void _setEffectToSDK(TESDKParam sdkParam) async {
+  /// 下发单个参数到 SDK。
+  ///
+  /// 返回 Future 以便需要严格下发顺序的场景（如模板下发前先关闭轻美妆）可以 await。
+  Future<void> _setEffectToSDK(TESDKParam sdkParam) async {
     int effectValue = _isEnableEnhancedMode
         ? _enhancingStrategy.enhanceValue(sdkParam)
         : sdkParam.effectValue;

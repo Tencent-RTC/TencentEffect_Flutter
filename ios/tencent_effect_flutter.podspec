@@ -19,7 +19,8 @@ pubspec_path = File.join(project_root, 'pubspec.yaml') if project_root
 sub_spec_version = 'S1-07'
 ALLOWED_VERSIONS = [
   'A1-00', 'A1-01', 'A1-02', 'A1-03', 'A1-04', 'A1-05', 'A1-06',
-  'S1-00', 'S1-01', 'S1-02', 'S1-03', 'S1-04', 'S1-05', 'S1-06', 'S1-07'
+  'S1-00', 'S1-01', 'S1-02', 'S1-03', 'S1-04', 'S1-05', 'S1-06', 'S1-07',
+  'X1-01', 'X1-02', 'All'
 ]
 
 puts "---------------- [TencentEffect] ----------------"
@@ -50,7 +51,7 @@ puts "-----------------------------------------------"
 
 Pod::Spec.new do |s|
   s.name             = 'tencent_effect_flutter'
-  s.version          = '4.3.0'
+  s.version          = '4.4.0'
   s.summary          = 'A new Flutter project.'
   s.description      = <<-DESC
 A new Flutter project.
@@ -59,8 +60,8 @@ A new Flutter project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.source_files     = 'Classes/**/*'
-  s.public_header_files = 'Classes/**/*.h'
+  s.source_files     = 'tencent_effect_flutter/Sources/tencent_effect_flutter/**/*.{h,m}'
+  s.public_header_files = 'tencent_effect_flutter/Sources/tencent_effect_flutter/include/**/*.h'
   s.dependency 'Flutter'
 
   s.default_subspec = sub_spec_version
@@ -68,11 +69,11 @@ A new Flutter project.
   # 根据 ALLOWED_VERSIONS 自动生成所有 subspec
   ALLOWED_VERSIONS.each do |ver|
     s.subspec ver do |ss|
-      ss.dependency "TencentEffect_#{ver}", '4.3.0.11'
+      ss.dependency "TencentEffect_#{ver}"
     end
   end
 
-  s.dependency 'TXCustomBeautyProcesserPlugin', '1.0.2'
+  s.dependency 'TXCustomBeautyProcesserPlugin'
   s.platform = :ios, '9.0'
   s.static_framework = true
 
