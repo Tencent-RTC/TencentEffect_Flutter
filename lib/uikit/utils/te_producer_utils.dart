@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
-
 import '../constant/te_constant.dart';
 import '../manager/te_res_path_manager.dart';
 import '../model/te_ui_property.dart';
@@ -212,7 +210,8 @@ class TEProducerUtils {
     TESDKParam? templateSDKParam;
     templateSDKParam = _getUsedProperties(uiProperties, usedProperties);
     if (templateSDKParam != null) {
-      usedProperties.removeWhere((param) => isBeautyOrLutName(param.effectName));
+      // 模板生效时，美颜 / 滤镜 / 轻美妆都以模板内的数据为准，独立参数一律剔除
+      usedProperties.removeWhere((param) => isBeautyLutLightMakeupName(param.effectName));
     }
     return usedProperties;
   }
@@ -224,9 +223,14 @@ class TEProducerUtils {
         if (uiProperty == null) {
           continue;
         }
+        // 轻美妆下钻态单项（LIGHT_MAKEUP_ITEM）与返回占位项（LIGHT_MAKEUP_BACK）都是
+        // 运行时构造的虚拟节点，其 sdkParam 仅用于读写父套装的 extraInfo，不能下发给 SDK，
+        // 否则会把"口红/腮红"当成独立效果下发。
         if (uiProperty.getUiState() != UIState.INIT &&
             uiProperty.sdkParam != null &&
-            uiProperty.uiCategory != UICategory.GREEN_BACKGROUND_V2_ITEM) {
+            uiProperty.uiCategory != UICategory.GREEN_BACKGROUND_V2_ITEM &&
+            uiProperty.uiCategory != UICategory.LIGHT_MAKEUP_ITEM &&
+            uiProperty.uiCategory != UICategory.LIGHT_MAKEUP_BACK) {
           properties.add(uiProperty.sdkParam!);
         }
         if (uiProperty.uiCategory == UICategory.BEAUTY_TEMPLATE &&
@@ -302,9 +306,23 @@ class TEProducerUtils {
           changeParamUIState(property, UIState.IN_USE);
         }
       } else {
+        // 轻美妆与单点美妆/滤镜的互斥由上层 onClickPointMakeup / onClickLightMakeup 按
+        // cleanLightMakeup 控制，这里只负责"同为轻美妆"套装间的单选；跨类（如点击单点美妆）
+        // 时跳过，避免误清轻美妆。
+        if (isLightMakeupCategory(property) && !isLightMakeupCategory(currentItem)) {
+          continue;
+        }
         changeParamUIState(property, UIState.INIT);
       }
     }
+  }
+
+  /// 判断是否为轻美妆相关分类（轻美妆套装 [UICategory.LIGHT_MAKEUP]
+  /// 或下钻态单项 [UICategory.LIGHT_MAKEUP_ITEM]）。
+  static bool isLightMakeupCategory(TEUIProperty? property) {
+    return property != null &&
+        (property.uiCategory == UICategory.LIGHT_MAKEUP ||
+            property.uiCategory == UICategory.LIGHT_MAKEUP_ITEM);
   }
 
   static bool isSameEffectName(TEUIProperty? property, TEUIProperty? property2) {
@@ -394,10 +412,22 @@ class TEProducerUtils {
     TEffectName.EFFECT_LUT,
   ];
 
-  /// Check if effectName is beauty or LUT type (not motion/makeup/segmentation/light_makeup/body/template)
-  static bool isBeautyOrLutName(String? effectName) {
+  /// 判断 effectName 是否属于「美颜 / 滤镜 / 轻美妆」这一类
+  /// （排除贴纸、整妆、分割、美体与模板）。
+  ///
+  /// 对应 Android 端 `ProviderUtils.isBeautyLutLightMakeupName`。
+  /// 这三类效果共用同一套「模板互斥」逻辑：
+  /// - 设置模板时，需要把已生效的它们清零并从参数管理器中移除；
+  /// - 设置它们时，需要把已生效的模板拆解为独立参数。
+  ///
+  /// 注意：轻美妆必须参与该判断。否则模板与轻美妆会同时生效
+  /// （UI 上已互斥，但下发给 SDK 的参数不会互相清理）。
+  static bool isBeautyLutLightMakeupName(String? effectName) {
     if (effectName == null || effectName.isEmpty) {
       return false;
+    }
+    if (effectName == TEffectName.EFFECT_LIGHT_MAKEUP) {
+      return true;
     }
     if (effectName == TEffectName.EFFECT_LUT) {
       return true;
@@ -410,8 +440,7 @@ class TEProducerUtils {
     }
     return effectName != TEffectName.EFFECT_MOTION &&
         effectName != TEffectName.EFFECT_MAKEUP &&
-        effectName != TEffectName.EFFECT_SEGMENTATION &&
-        effectName != TEffectName.EFFECT_LIGHT_MAKEUP;
+        effectName != TEffectName.EFFECT_SEGMENTATION;
   }
 
   /// Process template data: create TESDKParam for each template item and return checked template beauty data.
@@ -488,6 +517,58 @@ class TEProducerUtils {
     for (TEUIProperty property in teuiProperty.propertyList!) {
       if (property.uiCategory == UICategory.GREEN_BACKGROUND_V2_ITEM_IMPORT_IMAGE) {
         return property;
+      }
+    }
+    return null;
+  }
+
+  /// 删除 [teuiProperty] 的一级子项中 uiCategory 命中 [categories] 的节点（只遍历一层）。
+  ///
+  /// 常用于套餐规则中"保留父分类但裁掉某些子分类"的场景，
+  /// 对应 Android 端 `ProviderUtils.removeChildrenByCategory`。
+  static void removeChildrenByCategory(
+      TEUIProperty? teuiProperty, Set<UICategory> categories) {
+    final List<TEUIProperty>? children = teuiProperty?.propertyList;
+    if (children == null || children.isEmpty || categories.isEmpty) {
+      return;
+    }
+    children.removeWhere((item) => categories.contains(item.uiCategory));
+  }
+
+  /// 移除 [teuiProperty] 下包含染发 LUT 子项的那一整个分组。
+  ///
+  /// 递归查找 effectName 为 [TEffectName.BEAUTY_HAIR_COLOR_LUT] 的节点，
+  /// 取其父节点，并将该父节点整体从 [teuiProperty] 的一级子项中移除。
+  /// 对应 Android 端 `ProviderUtils.removeHairColorGroup`。
+  static void removeHairColorGroup(TEUIProperty? teuiProperty) {
+    final List<TEUIProperty>? children = teuiProperty?.propertyList;
+    if (children == null || children.isEmpty) {
+      return;
+    }
+    final TEUIProperty? parent =
+        _findParentByEffectName(null, teuiProperty!, TEffectName.BEAUTY_HAIR_COLOR_LUT);
+    if (parent != null) {
+      children.remove(parent);
+    }
+  }
+
+  /// 深度优先查找 effectName 等于 [effectName] 的首个节点，并返回它的父节点。
+  ///
+  /// 这里不依赖 [TEUIProperty.parentUIProperty]（套餐裁剪发生在父链回填之前），
+  /// 而是在递归下探时显式携带 parent。
+  static TEUIProperty? _findParentByEffectName(
+      TEUIProperty? parent, TEUIProperty current, String effectName) {
+    if (current.sdkParam != null && current.sdkParam!.effectName == effectName) {
+      return parent;
+    }
+    final List<TEUIProperty>? children = current.propertyList;
+    if (children == null || children.isEmpty) {
+      return null;
+    }
+    for (final TEUIProperty child in children) {
+      final TEUIProperty? found = _findParentByEffectName(current, child, effectName);
+      if (found != null) {
+        return found;
       }
     }
     return null;

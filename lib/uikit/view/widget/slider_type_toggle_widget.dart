@@ -18,7 +18,7 @@ class SliderTypeToggleWidget extends StatelessWidget {
       width: 95,
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
-        color: const Color(0xA6FFFFFF),
+        color: const Color(0x4C000000),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
@@ -59,7 +59,7 @@ class SliderTypeToggleWidget extends StatelessWidget {
           text,
           style: TextStyle(
             fontSize: 12,
-            color: isSelected ? const Color(0xCC000000) : const Color(0x4D000000),
+            color: isSelected ? const Color(0xCC000000) : const Color(0xFFFFFFFF),
             fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
           ),
         ),

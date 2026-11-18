@@ -39,26 +39,27 @@ class BeautyPanelSlider extends StatelessWidget {
         Expanded(
           child: SliderTheme(
             data: SliderThemeData(
-              trackHeight: 4.0,
-              activeTrackColor: const Color(0xFF006EFF),
-              inactiveTrackColor: Colors.white,
-              thumbColor: const Color(0xFF006EFF),
+              trackHeight: 2.0,
+              activeTrackColor: const Color(0xFFFFFFFF),
+              inactiveTrackColor: const Color(0xA6FFFFFF),
+              thumbColor: const Color(0xFFFFFFFF),
               thumbShape: const _ThumbWithBorder(
-                outerRadius: 7.0,
+                outerRadius: 7.5,
                 innerRadius: 4.5,
                 outerColor: Colors.white,
-                innerColor: Color(0xFF006EFF),
+                innerColor: Color(0xFFFFFFFF),
               ),
-              overlayColor: const Color(0x29006EFF),
+              overlayColor: const Color(0x33FFFFFF),
               overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
               trackShape: const _CustomTrackShape(
-                activeTrackHeight: 4.0,
-                inactiveTrackHeight: 4.0,
+                activeTrackHeight: 2.0,
+                inactiveTrackHeight: 2.0,
               ),
-              valueIndicatorColor: const Color(0xFF006EFF),
+              valueIndicatorColor: const Color(0xFFFFFFFF),
+              valueIndicatorShape: const _PillSliderValueIndicatorShape(),
               valueIndicatorTextStyle: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
+                color: Colors.black,
+                fontSize: 10,
               ),
               showValueIndicator: ShowValueIndicator.always,
             ),
@@ -202,5 +203,94 @@ class _CustomTrackShape extends SliderTrackShape {
     final Paint activePaint = Paint()
       ..color = sliderTheme.activeTrackColor ?? const Color(0xFF006EFF);
     canvas.drawRRect(activeRRect, activePaint);
+  }
+}
+
+/// Custom pill-shaped value indicator with no bottom arrow/tip,
+/// matching Android's `te_beauty_isb_indicator` (rounded_rectangle, arrow hidden).
+///
+/// Android layout:
+/// - background: white (`#FFFFFFFF`), 20dp corner radius (capsule shape)
+/// - TextView padding: horizontal 8dp, vertical 4dp, text 10sp black
+/// - ArrowView is set to View.GONE, so no triangle tip
+/// - Fixed width 33dp (INDICATOR_FIXED_WIDTH_DP), so the bubble does not
+///   resize while the value changes from 0 to 100.
+class _PillSliderValueIndicatorShape extends SliderComponentShape {
+  const _PillSliderValueIndicatorShape();
+
+  /// Fixed width that fits the widest label "100" (three digits), matching
+  /// Android's INDICATOR_FIXED_WIDTH_DP = 33.
+  static const double _fixedWidth = 33.0;
+
+  @override
+  Size getPreferredSize(
+    bool isEnabled,
+    bool isDiscrete, {
+    TextPainter? labelPainter,
+    double? textScaleFactor,
+  }) {
+    assert(labelPainter != null);
+    return Size(
+      _fixedWidth,
+      labelPainter!.height + 8.0,
+    );
+  }
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {
+    final Canvas canvas = context.canvas;
+    final double scale = activationAnimation.value;
+    if (scale == 0.0) {
+      return;
+    }
+
+    final double width = _fixedWidth;
+    final double height = labelPainter.height + 8.0;
+
+    // Position bubble above the thumb. Unscaled gap = 10 (so at scale=1,
+    // bubble bottom sits ~10px above thumb center, leaving room for the 7.5px thumb).
+    final double bubbleCenterY = center.dy - height / 2 - 10.0;
+
+    final Rect rect = Rect.fromCenter(
+      center: Offset.zero,
+      width: width,
+      height: height,
+    );
+
+    // Capsule shape: corner radius = height / 2
+    final RRect rRect = RRect.fromRectAndRadius(
+      rect,
+      Radius.circular(height / 2),
+    );
+
+    final Paint fillPaint = Paint()
+      ..color = sliderTheme.valueIndicatorColor ?? const Color(0xFFFFFFFF);
+
+    canvas.save();
+    canvas.translate(center.dx, bubbleCenterY);
+    canvas.scale(scale, scale);
+    canvas.drawRRect(rRect, fillPaint);
+
+    // Label is already styled by sliderTheme.valueIndicatorTextStyle
+    // (black, 10sp). Center it inside the pill.
+    final Offset textOffset = Offset(
+      -labelPainter.width / 2,
+      -labelPainter.height / 2,
+    );
+    labelPainter.paint(canvas, textOffset);
+    canvas.restore();
   }
 }

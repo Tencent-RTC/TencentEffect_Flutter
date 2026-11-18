@@ -8,6 +8,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tencent_effect_flutter/api/tencent_effect_api.dart';
+import 'package:tencent_effect_flutter/uikit/config/te_effect_plan.dart';
 import 'package:tencent_effect_flutter/uikit/config/te_res_config.dart';
 import 'package:tencent_effect_flutter/uikit/l10n/te_panel_localizations.dart';
 import 'package:tencent_effect_flutter/uikit/manager/te_res_path_manager.dart';
@@ -247,9 +248,9 @@ class _HomeState extends State<HomePage> {
   }
 
   void initPanelViewConfig() {
-    String panelDir = "assets/beauty_panel/";
-    String jsonFileSuffix =".json";
-    TEResConfig.getConfig().defaultPanelDataList.clear();
+    // String panelDir = "assets/beauty_panel/";
+    // String jsonFileSuffix =".json";
+    // TEResConfig.getConfig().defaultPanelDataList.clear();
 
     //这里是多语言适配的示例代码，判断出当前语言环境，加载对应语言的json文件，面板中默认的json中只支持简体中文和英文，如果现在需要支持繁体中文，咱们就可以这样操作
     //在beauty_panel下创建一个zt_hant 的文件夹，然后复制现有的json文件到此目录，然后将disPlayName的值修改为繁体中文，在需要使用的时候加载这个json文件即可。
@@ -258,31 +259,36 @@ class _HomeState extends State<HomePage> {
 
 
     // 判断当前设备语言环境是否为繁体中文
-    Locale currentLocale = PlatformDispatcher.instance.locale;
-    bool isTraditionalChinese = currentLocale.languageCode == 'zh' &&
-        (currentLocale.countryCode == 'TW' ||
-            currentLocale.countryCode == 'HK' ||
-            currentLocale.countryCode == 'MO' ||
-            currentLocale.scriptCode == 'Hant');
-    if (isTraditionalChinese) {
-      panelDir = "assets/beauty_panel/zh_hant/";
-      jsonFileSuffix = "_zh_hant.json";
-    }
+    // Locale currentLocale = PlatformDispatcher.instance.locale;
+    // bool isTraditionalChinese = currentLocale.languageCode == 'zh' &&
+    //     (currentLocale.countryCode == 'TW' ||
+    //         currentLocale.countryCode == 'HK' ||
+    //         currentLocale.countryCode == 'MO' ||
+    //         currentLocale.scriptCode == 'Hant');
+    // if (isTraditionalChinese) {
+    //   panelDir = "assets/beauty_panel/zh_hant/";
+    //   jsonFileSuffix = "_zh_hant.json";
+    // }
+    //
+    // TEResConfig.getConfig()
+    //   ..setBeautyTemplateRes("${panelDir}beauty_template${jsonFileSuffix}")
+    //   ..setBeautyRes("${panelDir}beauty${jsonFileSuffix}")
+    //   ..setBeautyRes("${panelDir}beauty_image${jsonFileSuffix}")
+    //   ..setBeautyRes("${panelDir}beauty_makeup${jsonFileSuffix}")
+    //   ..setBeautyRes("${panelDir}beauty_shape${jsonFileSuffix}")
+    //   ..setBeautyBodyRes("${panelDir}beauty_body${jsonFileSuffix}")
+    //   ..setLutRes("${panelDir}lut${jsonFileSuffix}")
+    //   ..setLightMakeupRes("${panelDir}light_makeup${jsonFileSuffix}")
+    //   ..setMakeUpRes("${panelDir}makeup${jsonFileSuffix}")
+    //   ..setMotionRes("${panelDir}motion_2d${jsonFileSuffix}")
+    //   ..setMotionRes("${panelDir}motion_3d${jsonFileSuffix}")
+    //   ..setMotionRes("${panelDir}motion_gesture${jsonFileSuffix}")
+    //   ..setSegmentationRes("${panelDir}segmentation${jsonFileSuffix}");
 
     TEResConfig.getConfig()
-      ..setBeautyTemplateRes("${panelDir}beauty_template${jsonFileSuffix}")
-      ..setBeautyRes("${panelDir}beauty${jsonFileSuffix}")
-      ..setBeautyRes("${panelDir}beauty_image${jsonFileSuffix}")
-      ..setBeautyRes("${panelDir}beauty_makeup${jsonFileSuffix}")
-      ..setBeautyRes("${panelDir}beauty_shape${jsonFileSuffix}")
-      ..setBeautyBodyRes("${panelDir}beauty_body${jsonFileSuffix}")
-      ..setLutRes("${panelDir}lut${jsonFileSuffix}")
-      ..setLightMakeupRes("${panelDir}light_makeup${jsonFileSuffix}")
-      ..setMakeUpRes("${panelDir}makeup${jsonFileSuffix}")
-      ..setMotionRes("${panelDir}motion_2d${jsonFileSuffix}")
-      ..setMotionRes("${panelDir}motion_3d${jsonFileSuffix}")
-      ..setMotionRes("${panelDir}motion_gesture${jsonFileSuffix}")
-      ..setSegmentationRes("${panelDir}segmentation${jsonFileSuffix}");
+    .setPanelViewResAndEffectPlanName('assets/beauty_panel/index.json', EffectPlan.S1_07);
+//如果要设置英文的时候就调用setDisPlayNameKey("en")
+//     TEResConfig.getConfig().setDisPlayNameKey("en");
   }
 
   Future<bool> isCopiedRes() async {

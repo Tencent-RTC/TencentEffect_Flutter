@@ -1,23 +1,49 @@
 import 'dart:io';
-import 'dart:convert';
 
 import '../../uikit/model/te_json_decoder.dart';
 
 import '../constant/te_constant.dart';
+import 'te_index_file_model.dart';
 
 class TEUIProperty {
   int id = -1;
+
+  /// 旧版多语言字段（中文名）。已过时。
+  ///
+  /// 新版面板配置（index.json + panel_json）请使用 [name]，本字段仅为兼容旧 json 保留。
   String? displayName;
+
+  /// 旧版多语言字段（英文名）。已过时。
+  ///
+  /// 新版面板配置（index.json + panel_json）请使用 [name]，本字段仅为兼容旧 json 保留。
   String? displayNameEn;
+
+  /// 新版多语言显示名，key 为语言代码，例如 `{"zh":"美白","en":"Brighten","ja":"美白"}`。
+  ///
+  /// 取值语言由 `TEResConfig.disPlayNameKey`（优先）或 `index.json` 的
+  /// `defaultLanguage` 决定，详见 `TEPanelDisplay.getDisplayName`。
+  Map<String, String>? name;
+
   String? icon;
   String? resourceUri;
   String? downloadPath;
 
   String? titleType;
 
+  /// 仅 `shape.json`（[UICategory.SHAPESET]）使用：按套餐分发实际加载的配置文件。
+  List<TEDataSetItem>? dataList;
+
   List<TEUIProperty>? propertyList;
   TESDKParam? sdkParam;
   List<TESDKParam>? paramList;
+
+  /// 轻美妆场景下，单项（口红/腮红/眼影/滤镜等）的展示信息映射表。
+  ///
+  /// key 为 `makeup.json` 中的 `effectName`（例如 `beauty.faceFeatureLipsLut`、`lut`），
+  /// value 为对应的 UI 展示信息（多语言 name / icon）。
+  /// 由 beauty_makeup.json 中「轻美妆」类目节点顶层的 `itemDisplayMap` 反序列化而来，
+  /// 其它场景无需使用。未配置该项时，轻美妆退化为仅可调节整套强度（不下钻）。
+  Map<String, TELightMakeupItemDisplay>? itemDisplayMap;
 
   TEUIProperty? parentUIProperty;
   UICategory? uiCategory;
@@ -49,11 +75,37 @@ class TEUIProperty {
     return (sdkParam == null && propertyList == null && paramList == null);
   }
 
+  /// 当前节点是否是一级主 Tab 节点（即面板顶部一级标题栏承载的节点）。
+  ///
+  /// 无父节点时返回 true。
+  bool isMainTabNode() {
+    return parentUIProperty == null;
+  }
+
+  /// 当前节点是否是二级标题节点（即面板二级标题栏承载的节点）。
+  ///
+  /// 注意 [hasSubTitle] 的语义是"该节点的**孩子**是二级标题"，
+  /// 因此判断"自己是不是二级标题"需要看父节点的该标记。
+  bool isSubTitleNode() {
+    return parentUIProperty != null && parentUIProperty!.hasSubTitle;
+  }
+
   bool isGSV2ImportImageItem() {
     return (uiCategory == UICategory.GREEN_BACKGROUND_V2_ITEM_IMPORT_IMAGE);
   }
 
+  /// 是否是"美妆无效果占位项"（各单点美妆里的「无」）。
+  ///
+  /// 判定条件：`sdkParam.resourcePath` 为空，且 effectName 属于单点美妆类。
+  /// 面板据此隐藏滑竿（点「无」时没有可调节的强度）。
+  ///
+  /// 注意：轻美妆下钻态单项（[UICategory.LIGHT_MAKEUP_ITEM]）复用单点美妆的 effectName
+  /// 且 resourcePath 为空，但它不是"无效果占位项"，必须排除，
+  /// 否则会被滑竿判定误判而隐藏滑竿（对应 Android 端「修改轻美妆子项没有展示滑竿的问题」）。
   bool isBeautyMakeupNoneItem() {
+    if (uiCategory == UICategory.LIGHT_MAKEUP_ITEM) {
+      return false;
+    }
     if (sdkParam != null && (sdkParam!.resourcePath == null || sdkParam!.resourcePath!.isEmpty)) {
       switch (sdkParam!.effectName) {
         case TEffectName.BEAUTY_MOUTH_LIPSTICK:
@@ -65,6 +117,9 @@ class TEUIProperty {
         case TEffectName.BEAUTY_FACE_MAKEUP_EYE_SEQUINS:
         case TEffectName.BEAUTY_FACE_MAKEUP_EYEBROW:
         case TEffectName.BEAUTY_FACE_MAKEUP_EYEBALL:
+        case TEffectName.BEAUTY_FACE_MAKEUP_EYELIDS:
+        case TEffectName.BEAUTY_FACE_MAKEUP_EYEWOCAN:
+        case TEffectName.BEAUTY_HAIR_COLOR_LUT:
           return true;
         default:
           return false;
@@ -80,22 +135,20 @@ class TEUIProperty {
     return false;
   }
 
+  /// 将 json 中的 `uiCategory` 字符串解析为枚举。
+  ///
+  /// 未知取值返回 null，此时该节点会继承父节点（或 Tab 根节点）的分类，
+  /// 与 Android 端 Gson 解析未知枚举时的行为一致。
   static UICategory? _parseUICategory(dynamic value) {
     if (value == null) return null;
-    String str = value.toString();
-    switch (str) {
-      case 'BEAUTY': return UICategory.BEAUTY;
-      case 'BODY_BEAUTY': return UICategory.BODY_BEAUTY;
-      case 'LUT': return UICategory.LUT;
-      case 'MOTION': return UICategory.MOTION;
-      case 'MAKEUP': return UICategory.MAKEUP;
-      case 'SEGMENTATION': return UICategory.SEGMENTATION;
-      case 'LIGHT_MAKEUP': return UICategory.LIGHT_MAKEUP;
-      case 'BEAUTY_TEMPLATE': return UICategory.BEAUTY_TEMPLATE;
-      case 'GREEN_BACKGROUND_V2_ITEM': return UICategory.GREEN_BACKGROUND_V2_ITEM;
-      case 'GREEN_BACKGROUND_V2_ITEM_IMPORT_IMAGE': return UICategory.GREEN_BACKGROUND_V2_ITEM_IMPORT_IMAGE;
-      default: return null;
+    final String str = value.toString().trim();
+    if (str.isEmpty) return null;
+    for (final UICategory category in UICategory.values) {
+      if (category.name == str) {
+        return category;
+      }
     }
+    return null;
   }
 
   TEUIProperty.fromJson(Map<String, dynamic> json) {
@@ -109,6 +162,7 @@ class TEUIProperty {
     }
     displayName = json['displayName'];
     displayNameEn = json['displayNameEn'];
+    name = TEIndexItem.parseNameMap(json['name']);
     icon = json['icon'];
     resourceUri = json['resourceUri'];
     downloadPath = json['downloadPath'];
@@ -118,6 +172,8 @@ class TEUIProperty {
     if (json['uiCategory'] != null) {
       uiCategory = _parseUICategory(json['uiCategory']);
     }
+    dataList = TEDataSetItem.decodeList(json['dataList']);
+    itemDisplayMap = TELightMakeupItemDisplay.decodeMap(json['itemDisplayMap']);
     propertyList = TEJsonDecoder.decodeTEUIPropertyList(json['propertyList']);
     Map<String, dynamic>? tempSdkParam = json['sdkParam'];
     sdkParam = tempSdkParam != null ? TESDKParam.fromJson(tempSdkParam) : null;
@@ -135,16 +191,65 @@ class TEUIProperty {
     data['id'] = id;
     data['displayName'] = displayName;
     data['displayNameEn'] = displayNameEn;
+    data['name'] = name;
     data['icon'] = icon;
     data['resourceUri'] = resourceUri;
     data['downloadPath'] = downloadPath;
     data['verticalLayout'] = verticalLayout;
     data['hasSubTitle'] = hasSubTitle;
+    if (itemDisplayMap != null && itemDisplayMap!.isNotEmpty) {
+      data['itemDisplayMap'] = itemDisplayMap!.map((key, value) => MapEntry(key, value.toJson()));
+    }
     data['propertyList'] = propertyList?.map((e) => e.toJson()).toList();
     data['sdkParam'] = sdkParam?.toJson();
     data['paramList'] = paramList?.map((e) => e.toJson()).toList();
     data['uiState'] = uiState;
     return data;
+  }
+}
+
+/// 轻美妆单项的展示信息。
+///
+/// 由 beauty_makeup.json 中「轻美妆」类目节点顶层的 `itemDisplayMap` 反序列化而来，
+/// 对应 Android 端 `TEUIProperty.LightMakeupItemDisplay`。
+class TELightMakeupItemDisplay {
+  /// 多语言名称，key 为语言代码，例如 `{"zh":"口红","en":"Lipstick","ja":"リップ"}`。
+  ///
+  /// 结构与应用在 [TEUIProperty.name] 上的一致，可直接复用 `TEPanelDisplay.getDisplayName`。
+  Map<String, String>? name;
+
+  /// 单项图标，取值规则与 [TEUIProperty.icon] 相同（相对面板资源根目录）。
+  String? icon;
+
+  TELightMakeupItemDisplay({this.name, this.icon});
+
+  TELightMakeupItemDisplay.fromJson(Map<String, dynamic> json)
+      : name = TEIndexItem.parseNameMap(json['name']),
+        icon = json['icon'];
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['icon'] = icon;
+    return data;
+  }
+
+  /// 反序列化 `itemDisplayMap` 节点。
+  ///
+  /// 保留 json 中的声明顺序（Dart 的 Map 为 LinkedHashMap），
+  /// 与 Android 端按 `itemDisplayMap` 声明顺序渲染单项的行为一致。
+  static Map<String, TELightMakeupItemDisplay>? decodeMap(dynamic raw) {
+    if (raw is! Map) {
+      return null;
+    }
+    final Map<String, TELightMakeupItemDisplay> result = <String, TELightMakeupItemDisplay>{};
+    raw.forEach((dynamic key, dynamic value) {
+      if (key == null || value is! Map) {
+        return;
+      }
+      result[key.toString()] = TELightMakeupItemDisplay.fromJson(Map<String, dynamic>.from(value));
+    });
+    return result.isEmpty ? null : result;
   }
 }
 
@@ -212,16 +317,48 @@ class TESDKParam {
   }
 }
 
+/// 面板功能项的分类。
+///
+/// 决定渲染方式以及 `effectName` 的自动填充逻辑。子节点未声明时会继承所属 Tab
+/// 根节点的取值（注意：继承的是 Tab 根节点，而非直接父节点）。
 enum UICategory {
   BEAUTY,
+
+  /// 画质调整类（`beauty_image.json`）。经 `EffectPlan.filter` 后会被改写为 [BEAUTY]。
+  BEAUTY_IMAGE,
+
+  /// 美型类（`beauty_*_shape.json`）。经 `EffectPlan.filter` 后会被改写为 [BEAUTY]。
+  BEAUTY_SHAPE,
+
   BODY_BEAUTY,
+
+  /// 美妆容器（`beauty_makeup.json` 根节点）。经 `EffectPlan.filter` 后会被改写为 [BEAUTY]。
+  BEAUTY_MAKEUP,
+
   LUT,
   MOTION,
   MAKEUP,
-  SEGMENTATION,
   LIGHT_MAKEUP,
+
+  /// 轻美妆下钻态中的单项（口红/腮红/眼影/滤镜等）。
+  ///
+  /// 由 [TELightMakeupItemBuilder] 在运行时构造：`sdkParam.effectName` 仅用作
+  /// 父套装 `extraInfo` 读写的 key，不会作为独立效果下发给 SDK。
+  LIGHT_MAKEUP_ITEM,
+
+  /// 轻美妆下钻态列表中"返回"占位项（兜底，不参与选中逻辑）。
+  LIGHT_MAKEUP_BACK,
+
   BEAUTY_TEMPLATE,
+  SEGMENTATION,
+
+  /// 配置分发器（`shape.json`），自身不参与渲染，按套餐展开为具体的美型配置。
+  SHAPESET,
+
+  /// 绿幕 V2 子项。
   GREEN_BACKGROUND_V2_ITEM,
+
+  /// 绿幕 V2 子项中的"导入图片"项。
   GREEN_BACKGROUND_V2_ITEM_IMPORT_IMAGE,
 }
 

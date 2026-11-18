@@ -21,8 +21,8 @@ class CompareButton extends StatelessWidget {
       child: Image.asset(
           'assets/icon/te_beauty_panel_view_compare_icon.png',
           package: 'tencent_effect_flutter',
-          width: 35,
-          height: 35,
+          width: 25,
+          height: 25,
         ),
     );
   }
